@@ -1,6 +1,6 @@
 # theater_project
 
-##REQUIRMENTS
+## REQUIRMENTS
 1. Admin can perform CRUD operartions on the movies.
 2. admin reserve seats for user.
 3. User can access to read all the movie.
@@ -11,7 +11,7 @@
 8. User and Admin can cancancel seats.
 9. Admin and user can login with permissions.
 
-##TEAM MEMBERS
+## TEAM MEMBERS
 Ahmed Samir
 Taman Moayed
 Ala Saad
