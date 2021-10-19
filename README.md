@@ -1,5 +1,8 @@
 # theater_project
 
+##App_Overview
+We have cinema ticket booking app , user can login with 2 permissions for customer and admin, customer can book a reservation for available show time and cancel their reservation via ticket id or all their tickets via username , admin can have customer permissions with add new movie ,pay bills, book show for added movie , cancel show.
+
 ## REQUIRMENTS
 1. Admin can perform CRUD operartions on the movies.
 2. admin reserve seats for user.
