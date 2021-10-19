@@ -50,6 +50,7 @@ public class Main {
             }
 
         }
+
 //        Cinema cinema = new Cinema();
 //        MovieData movieData = new MovieData();
 //        cinema.bookShow(1,"2:00","Avengers");

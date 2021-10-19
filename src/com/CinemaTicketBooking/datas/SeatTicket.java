@@ -4,6 +4,10 @@ import com.CinemaTicketBooking.model.Movie;
 import com.CinemaTicketBooking.model.Ticket;
 import com.CinemaTicketBooking.model.User;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +31,23 @@ public class SeatTicket {
             userTickets.put(UserData.getAuthUser().getUserName(),new ArrayList<>());
         }
         Cinema.bookSeat(theaterId, showTime, seatId);
-        userTickets.get(UserData.getAuthUser().getUserName()).add(new Ticket(ID_GENERATOR.getAndIncrement(),theaterId,showTime,seatId,row,column,movie));
-        ticketLists.add(new Ticket(ID_GENERATOR1.getAndIncrement(),theaterId,showTime,seatId,row,column,movie));
+        Ticket ticket = new Ticket(ID_GENERATOR1.getAndIncrement(),theaterId,showTime,seatId,row,column,movie);
+        userTickets.get(UserData.getAuthUser().getUserName()).add(ticket);
+        ticketLists.add(ticket);
+        try{
+            FileOutputStream f = new FileOutputStream("files\\tickets\\ticket_"+ticket.getTicketNo()+".txt");
+            ObjectOutputStream o = new ObjectOutputStream(f);
+            o.writeObject(ticket);
+            o.close();
+            f.close();
+
+        } catch (FileNotFoundException e){
+            System.out.println("File not found Exception. #MovieData*addMovie");
+            return false;
+        } catch (IOException e){
+            System.out.println("Error initializing stream. #MovieData*addMovie");
+            return false;
+        }
         return true;
 
     }

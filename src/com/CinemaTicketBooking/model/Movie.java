@@ -1,8 +1,9 @@
 package com.CinemaTicketBooking.model;
 
 import java.util.*;
+import java.io.*;
 
-public class Movie {
+public class Movie implements Serializable{
     private int movieId;
     private String movieName;
     private boolean isShowing=false;
