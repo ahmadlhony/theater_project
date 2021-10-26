@@ -28,7 +28,7 @@ public class Cinema {
 
     private void fetchAndSetBookedShow(){
         theaters.stream()
-                .filter(m->m.isTheaterBooked()==true)
+                .filter(Theater::isTheaterBooked)
                 .forEach(m->{
                     bookedShows.put(theaterItemInList(m.getTheaterId(),m.getShowTime()),m.getMovie().getMovieName());
                 });
@@ -61,6 +61,8 @@ public class Cinema {
         bookedShows.put(theaterItemInList(theaterId,showTime),movieName);
         if(!theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName)))
             return false;
+        MovieData movieData = new MovieData();
+        theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName));
         return cinemaSaveData.add(theaters.get(theaterItem),"theater_"+theaterItem);
 
     }
@@ -81,6 +83,8 @@ public class Cinema {
 
         if(!theaters.get(theaterItem).unBookTheater())
             return false;
+        theaters.get(theaterItem).unBookTheater();
+
         return cinemaSaveData.add(new Theater(theaterId,showTime),"theater_"+theaterItem);
 
 
@@ -198,7 +202,7 @@ public class Cinema {
         }
         if(!theaters.get(theaterItem).bookSeat(seatId))
             return false;
-        return cinemaSaveData.add(new Theater(theaterId,showTime),"theater_"+theaterItem);
+        return cinemaSaveData.add(theaters.get(theaterItem),"theater_"+theaterItem);
 
     }
 
@@ -212,7 +216,7 @@ public class Cinema {
             System.out.println("Unbooking seat failed #Cinema*unBookSeat");
             return false;
         }
-        return cinemaSaveData.add(new Theater(theaterId,showTime),"theater_"+theaterItem);
+        return cinemaSaveData.add(theaters.get(theaterItem),"theater_"+theaterItem);
 
     }
 

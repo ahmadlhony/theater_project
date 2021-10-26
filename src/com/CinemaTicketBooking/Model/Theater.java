@@ -103,7 +103,7 @@ public class Theater implements Serializable {
 
     @Override
     public String toString() {
-        return "\nTheater: " + theaterId+", and is booked for "+movie.getMovieName()+" at "+showTime + ".";
+        return "\nTheater: " + theaterId+(isTheaterBooked() ? (", and is booked for "+movie.getMovieName()+" at "+showTime ) : ", And is not Booked")+ ".";
     }
 
 

@@ -28,8 +28,8 @@ public class SeatTicket {
     }
 
     private void fetchTicketId(){
-//        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.get(ticketList.size()-1).getTicketNo()+1);
-        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.size());
+        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.get(ticketList.size()-1).getTicketNo()+1);
+//        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.size()-1);
 
     }
 
@@ -41,6 +41,7 @@ public class SeatTicket {
         }
         cinema.bookSeat(theaterId, showTime, seatId);
         Ticket ticket = new Ticket(Ticket_ID_GENERATOR.getAndIncrement(),theaterId,showTime,seatId,row,column,movie);
+        //add new Atomic INteger for userTickets
         userTickets.get(ticket.getTicketNo()).addTicket(ticket);
         ticketList.add(ticket);
 
