@@ -15,21 +15,21 @@ public class SeatTicket {
     private static  List<UserTicket> userTickets = new ArrayList<>();
 
     private static SaveData<Ticket> ticketListSaveData = new SaveData<>("files/tickets/");
-    private SaveData<UserTicket> userTicketsSaveData = new SaveData<>("files/userTickets/");
+    private static SaveData<UserTicket> userTicketsSaveData = new SaveData<>("files/userTickets/");
 
 
     public void fetchAndSetTicketList(){
-//        ticketList = ticketListSaveData.open();
-//        fetchTicketId();
+        ticketList = ticketListSaveData.open();
+        fetchTicketId();
     }
 
     public void fetchAndSetUserTicket(){
-//        userTickets = userTicketsSaveData.open();
+        userTickets = userTicketsSaveData.open();
     }
 
     private void fetchTicketId(){
 //        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.get(ticketList.size()-1).getTicketNo()+1);
-        Ticket_ID_GENERATOR= new AtomicInteger(0);
+        Ticket_ID_GENERATOR= new AtomicInteger(ticketList.size());
 
     }
 
@@ -43,7 +43,9 @@ public class SeatTicket {
         Ticket ticket = new Ticket(Ticket_ID_GENERATOR.getAndIncrement(),theaterId,showTime,seatId,row,column,movie);
         userTickets.get(ticket.getTicketNo()).addTicket(ticket);
         ticketList.add(ticket);
-        return ticketListSaveData.add(ticket,"ticket_"+ticket.getTicketNo());
+
+        return ticketListSaveData.add(ticket,"ticket_"+ticket.getTicketNo())
+                && userTicketsSaveData.add(userTickets.get(ticket.getTicketNo()),"userTicket_"+ticket.getTicketNo());
 
     }
 
@@ -54,7 +56,7 @@ public class SeatTicket {
             System.out.println("user not exist from SeatTicket class");
             return false;
         }
-        if (containsUser(userName)){
+        if (!containsUser(userName)){
             System.out.println("User not Exist , null #SeatTicket*removeAllTicketForUser");
             throw new IllegalStateException();
         }
