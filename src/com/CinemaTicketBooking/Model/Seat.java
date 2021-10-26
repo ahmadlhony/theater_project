@@ -1,8 +1,8 @@
-package com.CinemaTicketBooking.model;
+package com.CinemaTicketBooking.Model;
 
-import java.util.Map;
+import java.io.Serializable;
 
-public class Seat {
+public class Seat implements Serializable {
     private int seatId;
     private boolean isBooked = false;
     private int column;

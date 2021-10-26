@@ -1,6 +1,6 @@
-package com.CinemaTicketBooking.DosInterface;
+package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.datas.UserData;
+import com.CinemaTicketBooking.ControlerAndData.UserData;
 
 import java.util.Scanner;
 

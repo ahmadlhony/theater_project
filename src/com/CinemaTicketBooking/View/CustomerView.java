@@ -1,10 +1,8 @@
-package com.CinemaTicketBooking.DosInterface;
-
-import com.CinemaTicketBooking.classes.BookingSeats;
+package com.CinemaTicketBooking.View;
 
 import java.util.Scanner;
 
-public class CustomerInterface {
+public class CustomerView {
     public static void start(){
         Scanner console = new Scanner(System.in);
         System.out.println("*Customer Interface*");

@@ -1,18 +1,18 @@
-package com.CinemaTicketBooking.DosInterface;
+package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.classes.BookingSeats;
 import com.CinemaTicketBooking.classes.PayingBills;
-import com.CinemaTicketBooking.datas.Cinema;
-import com.CinemaTicketBooking.datas.MovieData;
-import com.CinemaTicketBooking.datas.UserData;
+import com.CinemaTicketBooking.ControlerAndData.Cinema;
+import com.CinemaTicketBooking.ControlerAndData.MovieData;
+import com.CinemaTicketBooking.ControlerAndData.UserData;
 
 import java.util.Scanner;
 
-public class AdminInterface {
+public class AdminView {
     public static void start(){
         UserData userData = new UserData();
         MovieData movieData = new MovieData();
         Cinema cinema = new Cinema();
+        PayingBills payingBills = new PayingBills();
         Scanner console = new Scanner(System.in);
 
         System.out.println("Welcome "+userData.getAuthUser());
@@ -38,7 +38,7 @@ public class AdminInterface {
                     if (reservedSeatAns == 1) {
                         System.out.println("Please Enter your Username: ");
                         String userName = console.next();
-                        PayingBills.start(userName);
+                        payingBills.start(userName);
 
                     } else if (reservedSeatAns == 2) {
                         System.out.println("Please reserve your seat. ");
@@ -50,7 +50,7 @@ public class AdminInterface {
 
             }else if(menuAns==2){
                 BookingSeats.startBookingSeat();
-                break;
+
 
             }else if(menuAns==3){
                 System.out.println("\n Enter Movie Name: ");
@@ -58,7 +58,7 @@ public class AdminInterface {
 //                console.nextLine();
 
                 if(movieData.addMovie(movieName)){
-                    System.out.println("Added successfully AdminInterface\n");
+                    System.out.println("Added successfully AdminView\n");
                 }
 
 
@@ -77,9 +77,9 @@ public class AdminInterface {
                 String showTime = Cinema.showIndexToShowTime(showIndex);
 
                 if(cinema.bookShow(theaterId,showTime,movieName)){
-                    System.out.println("Show Successfully booked AdminInterface");
+                    System.out.println("Show Successfully booked AdminView");
                 }else{
-                    System.out.println("Show not booked AdminInterface");
+                    System.out.println("Show not booked AdminView");
 
                 }
 
@@ -94,7 +94,7 @@ public class AdminInterface {
                 int showIndex = console.nextInt();
                 String showTime = Cinema.showIndexToShowTime(showIndex);
                 if (cinema.UnBookShow(theaterId,showTime)){
-                    System.out.println("Successful from AdminInterface");
+                    System.out.println("Successful from AdminView");
 
                 }
 

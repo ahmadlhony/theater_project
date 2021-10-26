@@ -1,9 +1,10 @@
 package com.CinemaTicketBooking.classes;
 
-import com.CinemaTicketBooking.datas.SeatTicket;
-import com.CinemaTicketBooking.datas.UserData;
-import com.CinemaTicketBooking.model.Bill;
-import com.CinemaTicketBooking.model.Ticket;
+import com.CinemaTicketBooking.ControlerAndData.SaveData;
+import com.CinemaTicketBooking.ControlerAndData.SeatTicket;
+import com.CinemaTicketBooking.ControlerAndData.UserData;
+import com.CinemaTicketBooking.Model.Bill;
+import com.CinemaTicketBooking.Model.Ticket;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,11 +13,12 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PayingBills {
-    private static AtomicInteger ID_GENERATOR = new AtomicInteger(0);
+    private static AtomicInteger BILL_ID_GENERATOR;
     private static List<Bill> billList = new ArrayList<>();
+    private SaveData<Bill> billSaveData = new SaveData<>("files/bills/");
 
     //have you booked seat ? payBills : booking seats
-    public static boolean start(String userName){
+    public boolean start(String userName){
         int total=0;
         UserData userData = new UserData();
         if (!userData.isUserExist(userName)){
@@ -43,13 +45,29 @@ public class PayingBills {
         System.out.println("Your total is: "+ total);
         System.out.println("        *Have a great show*");
         System.out.println();
-        billList.add(new Bill(ID_GENERATOR.getAndIncrement(),total,tickets));
-        return SeatTicket.removeAllTicketForUser(userName);
-
-
-
-
-
+        Bill bill = new Bill(BILL_ID_GENERATOR.getAndIncrement(),total,tickets);
+        billList.add(bill);
+        if(!SeatTicket.removeAllTicketForUser(userName))
+            return false;
+        return billSaveData.add(bill,"bill_"+bill.getBillId());
 
     }
+
+    public void fetchId(){
+//        BILL_ID_GENERATOR = new AtomicInteger(billList.get(billList.size()-1).getBillId()+1);
+        BILL_ID_GENERATOR = new AtomicInteger(billList.size()+1);
+
+    }
+
+    public void fetchAndSetBillList(){
+        billList = billSaveData.open();
+        fetchId();
+    }
+
+    public void addBill(Bill bill){
+        String extendedPath = "bill_"+bill.getBillId();
+        billSaveData.add(bill,extendedPath);
+    }
+
+
 }

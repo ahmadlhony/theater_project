@@ -1,6 +1,8 @@
-package com.CinemaTicketBooking.model;
+package com.CinemaTicketBooking.Model;
 
-public class Ticket{
+import java.io.Serializable;
+
+public class Ticket implements Serializable {
     private int ticketNo;
     private int theaterId;
     private String showTime;

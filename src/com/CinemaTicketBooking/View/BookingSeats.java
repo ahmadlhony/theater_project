@@ -1,12 +1,10 @@
-package com.CinemaTicketBooking.classes;
+package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.datas.Cinema;
-import com.CinemaTicketBooking.datas.MovieData;
-import com.CinemaTicketBooking.datas.SeatTicket;
-import com.CinemaTicketBooking.datas.UserData;
-import com.CinemaTicketBooking.model.Seat;
+import com.CinemaTicketBooking.ControlerAndData.Cinema;
+import com.CinemaTicketBooking.ControlerAndData.MovieData;
+import com.CinemaTicketBooking.ControlerAndData.SeatTicket;
+import com.CinemaTicketBooking.ControlerAndData.UserData;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class BookingSeats {
@@ -18,7 +16,7 @@ public class BookingSeats {
             Scanner console = new Scanner(System.in);
 
             System.out.println("*Booking Seat*");
-            Cinema.availableMoviesShows();
+            Cinema.availableMovieIsInShow();
             System.out.println("\n Enter theater you want: ");
             int selectedTheaterId = console.nextInt();
             System.out.println("Which Time ? " +
@@ -30,7 +28,7 @@ public class BookingSeats {
             int selectedSeatId = console.nextInt();
 
 
-            return SeatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId,rowCalculate(selectedSeatId),columnCalculate(selectedSeatId),Cinema.getTheater(selectedTheaterId,selectedShowTime).getMovie());
+            return SeatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId,rowCalculate(selectedSeatId),columnCalculate(selectedSeatId),cinema.getBookedTheater(selectedTheaterId,selectedShowTime).getMovie());
         }
     }
 
@@ -46,34 +44,12 @@ public class BookingSeats {
             System.out.println("Please Enter your username: ");
             String userName = console.next();
             if (userData.isUserExist(userName)) {
-                System.out.println("Do you want to cancel all your reservation or just one ticket? " +
-                        "\n1.Cancel all Reservation" +
-                        "\n2.just one ticket");
-                int cancelReservation = console.nextInt();
-                if (cancelReservation==1){
-                    if(!SeatTicket.removeAllTicketForUser(userName)){
-                        System.out.println("Reservation canceling failed. #BookingSeat*cancelReservation");
-                        return false;
-                    }
-                    return true;
-
-                }else if (cancelReservation==2){
-                    while (true) {
-                        System.out.println("Please enter your ticket ID: ");
-                        int ticketId = console.nextInt();
-                        if (!SeatTicket.removeTicket(userName, ticketId)) {
-                            System.out.println("Ticket removing failed. #BookingSeat*cancelReservation\n");
-                        }
-                        System.out.println("Do you want to cancel more reservation? " +
-                                "\n1.Yes" +
-                                "\n2.No");
-                        int cancelMore = console.nextInt();
-                        if (cancelMore==2){
-                            return true;
-                        }
-                    }
-
+                System.out.println("To cancel your reservations enter your userName? ");
+                if(!SeatTicket.removeAllTicketForUser(userName)){
+                    System.out.println("Reservation canceling failed. #BookingSeat*cancelReservation");
+                    return false;
                 }
+                return true;
             } else {
                 System.out.println("Username is not exist.");
             }
@@ -85,8 +61,9 @@ public class BookingSeats {
     }
 
     public static void showAvailableSeat(int theaterId,String showTime) {
+        Cinema cinema = new Cinema();
         System.out.println("\n*available Seats are for theater: "+theaterId+", at: "+showTime  +"*");
-        var seats = Cinema.getTheater(theaterId,showTime).availableSeats();
+        var seats = cinema.getBookedTheater(theaterId,showTime).availableSeats();
 
         for(var seat:seats){
             System.out.print(seat);

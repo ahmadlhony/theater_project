@@ -1,11 +1,14 @@
-package com.CinemaTicketBooking.model;
+package com.CinemaTicketBooking.Model;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class User implements Serializable{
     private int userId;
     private String userName;
     private boolean isAdmin;
+
 
     //you can add booked seats for user
 
@@ -29,6 +32,8 @@ public class User implements Serializable{
     public boolean isAdmin() {
         return isAdmin;
     }
+
+
 
 
 

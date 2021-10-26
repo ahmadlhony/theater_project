@@ -1,10 +1,11 @@
-package com.CinemaTicketBooking.model;
+package com.CinemaTicketBooking.Model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Theater {
+public class Theater implements Serializable {
     private int theaterId;
     private String showTime;
     private Movie movie;
@@ -102,7 +103,7 @@ public class Theater {
 
     @Override
     public String toString() {
-        return "\nTheater is: " + theaterId+(isBooked ? ", and is booked for "+movie.getMovieName()+" at "+showTime + ", and available seats are: \n"+availableSeats(): ", and it is not booked" );
+        return "\nTheater: " + theaterId+", and is booked for "+movie.getMovieName()+" at "+showTime + ".";
     }
 
 
