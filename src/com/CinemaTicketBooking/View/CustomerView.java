@@ -18,7 +18,6 @@ public class CustomerView {
                 BookingSeats.startBookingSeat();
             }else if(select==2){
                 BookingSeats.cancelReservation();
-                break;
             }
 
         }

@@ -10,10 +10,6 @@ public class Movie implements Serializable{
 
 
     public Movie(int movieId, String movieName) {
-
-
-
-
         this.movieId = movieId;
         this.movieName = movieName;
     }
@@ -29,7 +25,6 @@ public class Movie implements Serializable{
     public boolean isShowing(){
         return isShowing;
     }
-
 
     @Override
     public String toString() {

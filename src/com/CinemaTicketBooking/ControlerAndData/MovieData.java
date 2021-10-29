@@ -1,24 +1,18 @@
 package com.CinemaTicketBooking.ControlerAndData;
 
-import com.CinemaTicketBooking.Model.Bill;
 import com.CinemaTicketBooking.Model.Movie;
 
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MovieData {
     private static AtomicInteger MOVIE_ID_GENERATOR ;
-    private SaveData<Movie> movieSaveData = new SaveData<>("files/movies/");
-
-
+    private static SaveData<Movie> movieSaveData = new SaveData<>("files/movies.txt");
     private static List<Movie> movies = new ArrayList<>();
 
-
     public void fetchAndSetMovies(){
-        movies = movieSaveData.open();
+        movies = movieSaveData.openList();
         fetchMovieId();
     }
 
@@ -33,23 +27,27 @@ public class MovieData {
         }
         Movie movie = new Movie(MOVIE_ID_GENERATOR.getAndIncrement(),movieName);
         movies.add(movie);
-
-        return movieSaveData.add(movie,"movies_"+movie.getMovieId());
+        return movieSaveData.saveListToFile(movies);
     }
 
     public Movie getMovieByName(String movieName){
-        for(Movie movie:movies){
-            if (movie.getMovieName().equals(movieName))
-                return movie;
-        }
-        System.out.println("MovieName not exist");
-        return null;
+//        for(Movie movie:movies){
+//            if (movie.getMovieName().equals(movieName))
+//                return movie;
+//        }
+//
+//        System.out.println("MovieName not exist");
+        return movies.stream().filter(movie -> movie.getMovieName().equals(movieName)).findAny().get();
     }
 
     public boolean isMovieExist(String movieName){
-        return movies.stream()
-                .anyMatch(m -> m.getMovieName().equals(movieName));
+        return movies.stream().anyMatch(m -> m.getMovieName().equals(movieName));
+    }
 
+    public void availableMovies(){
+        System.out.println("Available Movies: ");
+        movies.forEach(m -> System.out.println(m.getMovieName() + "."));
+        System.out.println();
     }
 
     public List<Movie> getMovies(){

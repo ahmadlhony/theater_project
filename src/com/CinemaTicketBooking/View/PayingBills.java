@@ -1,4 +1,4 @@
-package com.CinemaTicketBooking.classes;
+package com.CinemaTicketBooking.View;
 
 import com.CinemaTicketBooking.ControlerAndData.SaveData;
 import com.CinemaTicketBooking.ControlerAndData.SeatTicket;
@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PayingBills {
     private static AtomicInteger BILL_ID_GENERATOR;
     private static List<Bill> billList = new ArrayList<>();
-    private SaveData<Bill> billSaveData = new SaveData<>("files/bills/");
+    private static SaveData<Bill> billSaveData = new SaveData<>("files/bills.txt");
 
     //have you booked seat ? payBills : booking seats
     public boolean start(String userName){
@@ -49,25 +49,19 @@ public class PayingBills {
         billList.add(bill);
         if(!SeatTicket.removeAllTicketForUser(userName))
             return false;
-        return billSaveData.add(bill,"bill_"+bill.getBillId());
+        return billSaveData.saveListToFile(billList);
 
     }
 
     public void fetchId(){
-//        BILL_ID_GENERATOR = new AtomicInteger(billList.get(billList.size()-1).getBillId()+1);
         BILL_ID_GENERATOR = new AtomicInteger(billList.size()+1);
 
     }
 
+
     public void fetchAndSetBillList(){
-        billList = billSaveData.open();
+        billList = billSaveData.openList();
         fetchId();
     }
-
-    public void addBill(Bill bill){
-        String extendedPath = "bill_"+bill.getBillId();
-        billSaveData.add(bill,extendedPath);
-    }
-
 
 }

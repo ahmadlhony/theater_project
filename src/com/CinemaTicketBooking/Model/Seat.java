@@ -16,10 +16,6 @@ public class Seat implements Serializable {
         this.column=columnCalculate(seatId);
     }
 
-
-//    int seatNum = seatId;
-
-
     private int columnCalculate(int seatId){
         return ((seatId-1)%14)+1;
     }
@@ -35,30 +31,6 @@ public class Seat implements Serializable {
             return 'D';
         }
         return ' ';
-    }
-
-    private int getSeatIdByRowAndColumn(char row,int column){
-        if (column < 14 || column <1){
-            System.out.println("Enter an available column");
-            return -2;
-        }
-        int seatId;
-        int temp;
-        if (row=='A' || row=='a'){
-            temp = 0;
-
-        }else if (row=='B' || row=='b'){
-            temp = 14;
-
-        }else if (row=='C' || row=='c'){
-            temp = 28;
-        }else if (row=='D' || row=='d'){
-            temp = 42;
-        }else{
-            System.out.println("Enter an available row");
-            return -1;
-        }
-        return temp+column;
     }
 
     public int getSeatId() {
@@ -79,17 +51,17 @@ public class Seat implements Serializable {
 
     public boolean bookSeat() {
         if (isBooked()){
-            System.out.println("Seat already booked");
+            System.out.println("Seat already booked #Seat*bookSeat");
             return false;
         }
-        System.out.println("Seat Successfully booked");
+        System.out.println("Seat Successfully booked #Seat*bookSeat");
         isBooked = true;
         return true;
     }
 
     public boolean unBookSeat() {
         if (isBooked == false){
-            System.out.println("Seat is not booked");
+            System.out.println("Seat is not booked  #Seat*unBookSeat");
             return false;
         }
 

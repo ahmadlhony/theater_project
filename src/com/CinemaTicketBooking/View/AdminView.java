@@ -1,6 +1,5 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.classes.PayingBills;
 import com.CinemaTicketBooking.ControlerAndData.Cinema;
 import com.CinemaTicketBooking.ControlerAndData.MovieData;
 import com.CinemaTicketBooking.ControlerAndData.UserData;
@@ -64,11 +63,11 @@ public class AdminView {
 
             }else if(menuAns==4){
                 System.out.println();
-                Cinema.availableMovies(movieData);
+                movieData.availableMovies();
                 System.out.println("Enter Movie Name: ");
                 String movieName = console.next();
 //                console.nextLine();
-                Cinema.availableShows();
+                cinema.availableShows();
                 System.out.println("Enter an available TheaterId: ");
                 int theaterId = console.nextInt();
                 System.out.println("Which Time ? "+
@@ -86,7 +85,7 @@ public class AdminView {
 
             }else if(menuAns==5){
                 System.out.println("\n*Cancel Show*");
-                Cinema.availableShows();
+                cinema.availableShows();
                 System.out.println("Which show you want to Delete, Enter theaterId");
                 int theaterId = console.nextInt();
                 System.out.println("Which Time ? "+

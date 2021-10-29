@@ -4,7 +4,7 @@ import com.CinemaTicketBooking.View.AddingUser;
 import com.CinemaTicketBooking.View.AdminView;
 import com.CinemaTicketBooking.View.AuthenticateUser;
 import com.CinemaTicketBooking.View.CustomerView;
-import com.CinemaTicketBooking.classes.PayingBills;
+import com.CinemaTicketBooking.View.PayingBills;
 
 
 import java.util.Scanner;
@@ -13,7 +13,8 @@ public class Main {
     public static void main(String[] args) {
         Cinema cinema = new Cinema();
         fetchAndSeatData();
-        cinema.availableShowTime().forEach(m->System.out.println(m.getTheaterId()+", "+m.getShowTime()+", "+ m.isTheaterBooked()));
+
+//        cinema.availableShowTime().forEach(m->System.out.println(m.getTheaterId()+", "+m.getShowTime()+", "+ m.isTheaterBooked()));
         Scanner console = new Scanner(System.in);
         System.out.println("Welcome to Cinema Ticket Booking");
         while(true){
@@ -49,7 +50,6 @@ public class Main {
                 break;
             }
         }
-
     }
 
     private static void fetchAndSeatData(){

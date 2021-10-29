@@ -1,15 +1,16 @@
 package com.CinemaTicketBooking.Model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Theater implements Serializable {
     private int theaterId;
     private String showTime;
     private Movie movie;
     private boolean isBooked= false;
+
 
 
 
@@ -40,7 +41,7 @@ public class Theater implements Serializable {
 
     public boolean bookSeat(int seatId) {
         if (seatId<1 || seatId>56){
-            System.out.println("this Seat not available (1-56)");
+            System.out.println("this Seat not available (1-56) #Theater*bookSeat");
             return false;
         }
         return seatsList.get(seatId-1).bookSeat();
@@ -48,7 +49,7 @@ public class Theater implements Serializable {
 
     public boolean unBookSeat(int seatId) {
         if (seatId<1 || seatId>56){
-            System.out.println("this Seat not available (1-56)");
+            System.out.println("this Seat not available (1-56) #Theater*unBookSeat");
             return false;
         }
         return seatsList.get(seatId-1).unBookSeat();
@@ -61,7 +62,7 @@ public class Theater implements Serializable {
 
     public boolean bookTheater(Movie movie){
         if (isBooked){
-            System.out.println("sorry the theater is booked for " + this.movie.getMovieName());
+            System.out.println("sorry the theater is booked for " + this.movie.getMovieName()+", #Theater*bookTheater");
             return false;
         }
         this.movie=movie;
@@ -71,7 +72,7 @@ public class Theater implements Serializable {
 
     public boolean unBookTheater() {
         if (!isBooked){
-            System.out.println("sorry the theater is not booked");
+            System.out.println("this theater is not booked #Theater*unBookTheater");
             return false;
         }
         this.movie=null;
@@ -84,13 +85,7 @@ public class Theater implements Serializable {
             System.out.println("The theater is not booked");
             return null;
         }
-        List<Seat> availableSeat = new ArrayList<>(56);
-        for(Seat seat: seatsList){
-            if (!seat.isBooked()){
-                availableSeat.add(seat);
-            }
-        }
-        return availableSeat;
+        return seatsList.stream().filter(m -> !m.isBooked()).collect(Collectors.toList());
     }
 
     public String getShowTime() {

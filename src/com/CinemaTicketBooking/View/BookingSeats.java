@@ -33,18 +33,12 @@ public class BookingSeats {
     }
 
     public static boolean cancelReservation(){
-
         UserData userData = new UserData();
-        MovieData movieData = new MovieData();
-        Cinema cinema = new Cinema();
-
         Scanner console = new Scanner(System.in);
         System.out.println("*Cancel Reservation*");
-        while (true) {
             System.out.println("Please Enter your username: ");
             String userName = console.next();
             if (userData.isUserExist(userName)) {
-                System.out.println("To cancel your reservations enter your userName? ");
                 if(!SeatTicket.removeAllTicketForUser(userName)){
                     System.out.println("Reservation canceling failed. #BookingSeat*cancelReservation");
                     return false;
@@ -52,24 +46,21 @@ public class BookingSeats {
                 return true;
             } else {
                 System.out.println("Username is not exist.");
+                return false;
             }
-        }
-
-
-
-
     }
 
     public static void showAvailableSeat(int theaterId,String showTime) {
         Cinema cinema = new Cinema();
         System.out.println("\n*available Seats are for theater: "+theaterId+", at: "+showTime  +"*");
         var seats = cinema.getBookedTheater(theaterId,showTime).availableSeats();
+        seats.forEach(seat -> {
+                    System.out.print(seat);
+                    if (seat.getSeatId()==14 || seat.getSeatId()==28 || seat.getSeatId()==42)
+                        System.out.println();
+                });
 
-        for(var seat:seats){
-            System.out.print(seat);
-            if (seat.getSeatId()==14 || seat.getSeatId()==28 || seat.getSeatId()==42)
-                System.out.println();
-        }
+//
 
     }
     private static int columnCalculate(int seatId){
