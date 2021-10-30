@@ -1,20 +1,20 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.ControlerAndData.Cinema;
-import com.CinemaTicketBooking.ControlerAndData.MovieData;
-import com.CinemaTicketBooking.ControlerAndData.UserData;
+import com.CinemaTicketBooking.Controler.Cinema;
+import com.CinemaTicketBooking.Controler.MovieController;
+import com.CinemaTicketBooking.Controler.UserController;
 
 import java.util.Scanner;
 
 public class AdminView {
     public static void start(){
-        UserData userData = new UserData();
-        MovieData movieData = new MovieData();
+        UserController userController = new UserController();
+        MovieController movieController = new MovieController();
         Cinema cinema = new Cinema();
         PayingBills payingBills = new PayingBills();
         Scanner console = new Scanner(System.in);
 
-        System.out.println("Welcome "+userData.getAuthUser());
+        System.out.println("Welcome "+ userController.getAuthUser());
         System.out.println();
         while (true){
             System.out.println("Admin menu: " +
@@ -37,7 +37,11 @@ public class AdminView {
                     if (reservedSeatAns == 1) {
                         System.out.println("Please Enter your Username: ");
                         String userName = console.next();
-                        payingBills.start(userName);
+                        if(payingBills.start(userName)){
+                            System.out.println("Complete #AdminView*payingBill1");
+                            break;
+                        }
+
 
                     } else if (reservedSeatAns == 2) {
                         System.out.println("Please reserve your seat. ");
@@ -56,14 +60,14 @@ public class AdminView {
                 String movieName = console.next();
 //                console.nextLine();
 
-                if(movieData.addMovie(movieName)){
+                if(movieController.addMovie(movieName)){
                     System.out.println("Added successfully AdminView\n");
                 }
 
 
             }else if(menuAns==4){
                 System.out.println();
-                movieData.availableMovies();
+                movieController.availableMovies();
                 System.out.println("Enter Movie Name: ");
                 String movieName = console.next();
 //                console.nextLine();
@@ -73,7 +77,7 @@ public class AdminView {
                 System.out.println("Which Time ? "+
                 "1.2:00 \n2.5:00 \n3.8:00");
                 int showIndex = console.nextInt();
-                String showTime = Cinema.showIndexToShowTime(showIndex);
+                String showTime = cinema.showIndexToShowTime(showIndex);
 
                 if(cinema.bookShow(theaterId,showTime,movieName)){
                     System.out.println("Show Successfully booked AdminView");
@@ -85,13 +89,13 @@ public class AdminView {
 
             }else if(menuAns==5){
                 System.out.println("\n*Cancel Show*");
-                cinema.availableShows();
+                cinema.availableMovieIsInShow();
                 System.out.println("Which show you want to Delete, Enter theaterId");
                 int theaterId = console.nextInt();
                 System.out.println("Which Time ? "+
                         "1.2:00 \n2.5:00 \n3.8:00");
                 int showIndex = console.nextInt();
-                String showTime = Cinema.showIndexToShowTime(showIndex);
+                String showTime = cinema.showIndexToShowTime(showIndex);
                 if (cinema.UnBookShow(theaterId,showTime)){
                     System.out.println("Successful from AdminView");
 

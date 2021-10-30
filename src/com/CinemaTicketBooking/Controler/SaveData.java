@@ -1,4 +1,4 @@
-package com.CinemaTicketBooking.ControlerAndData;
+package com.CinemaTicketBooking.Controler;
 
 import java.io.*;
 import java.util.*;

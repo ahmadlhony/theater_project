@@ -1,45 +1,65 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.ControlerAndData.Cinema;
-import com.CinemaTicketBooking.ControlerAndData.MovieData;
-import com.CinemaTicketBooking.ControlerAndData.SeatTicket;
-import com.CinemaTicketBooking.ControlerAndData.UserData;
+import com.CinemaTicketBooking.Controler.Cinema;
+import com.CinemaTicketBooking.Controler.MovieController;
+import com.CinemaTicketBooking.Controler.SeatTicket;
+import com.CinemaTicketBooking.Controler.UserController;
 
 import java.util.Scanner;
 
 public class BookingSeats {
+    private static SeatTicket seatTicket = new SeatTicket();
     public static boolean startBookingSeat(){
+
         while (true) {
-            UserData userData = new UserData();
-            MovieData movieData = new MovieData();
             Cinema cinema = new Cinema();
             Scanner console = new Scanner(System.in);
 
             System.out.println("*Booking Seat*");
-            Cinema.availableMovieIsInShow();
-            System.out.println("\n Enter theater you want: ");
+            cinema.availableMovieIsInShow();
+            System.out.println("\n Enter theater you want: 0 to Quit");
             int selectedTheaterId = console.nextInt();
             System.out.println("Which Time ? " +
-                    "1.2:00 \n2.5:00 \n3.8:00");
+                    "1.2:00 \n2.5:00 \n3.8:00 \n0.Quit");
             int showIndex = console.nextInt();
-            String selectedShowTime = Cinema.showIndexToShowTime(showIndex);
-            showAvailableSeat(selectedTheaterId, selectedShowTime);
+            if (selectedTheaterId==0 || showIndex ==0){
+                break;
+            }
+            String selectedShowTime = cinema.showIndexToShowTime(showIndex);
+            if(!cinema.showAvailableSeat(selectedTheaterId, selectedShowTime)){
+                System.out.println("Please enter a valid theater and showtime #BookingSeat*startBookingSeat");
+                continue;
+            }
             System.out.println("\nEnter a SeatId: ");
             int selectedSeatId = console.nextInt();
 
 
-            return SeatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId,rowCalculate(selectedSeatId),columnCalculate(selectedSeatId),cinema.getBookedTheater(selectedTheaterId,selectedShowTime).getMovie());
+            if(seatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId,rowCalculate(selectedSeatId),columnCalculate(selectedSeatId),cinema.getBookedTheater(selectedTheaterId,selectedShowTime).getMovie())){
+                System.out.println("Do you want to book more Seat? \n1.Yes \n0.Exit");
+                int bookMoreSeatAns = console.nextInt();
+                if (bookMoreSeatAns==1){
+                    continue;
+                }else if(bookMoreSeatAns==0){
+                    return true;
+                }else{
+                    return true;
+                }
+            }else{
+                return false;
+            }
         }
+        return false;
+
     }
 
     public static boolean cancelReservation(){
-        UserData userData = new UserData();
+        UserController userController = new UserController();
         Scanner console = new Scanner(System.in);
         System.out.println("*Cancel Reservation*");
             System.out.println("Please Enter your username: ");
             String userName = console.next();
-            if (userData.isUserExist(userName)) {
-                if(!SeatTicket.removeAllTicketForUser(userName)){
+            if (userController.isUserExist(userName)) {
+                if(!seatTicket.removeAllTicketForUser(userName)){
                     System.out.println("Reservation canceling failed. #BookingSeat*cancelReservation");
                     return false;
                 }
@@ -50,19 +70,7 @@ public class BookingSeats {
             }
     }
 
-    public static void showAvailableSeat(int theaterId,String showTime) {
-        Cinema cinema = new Cinema();
-        System.out.println("\n*available Seats are for theater: "+theaterId+", at: "+showTime  +"*");
-        var seats = cinema.getBookedTheater(theaterId,showTime).availableSeats();
-        seats.forEach(seat -> {
-                    System.out.print(seat);
-                    if (seat.getSeatId()==14 || seat.getSeatId()==28 || seat.getSeatId()==42)
-                        System.out.println();
-                });
 
-//
-
-    }
     private static int columnCalculate(int seatId){
         return ((seatId-1)%14)+1;
     }

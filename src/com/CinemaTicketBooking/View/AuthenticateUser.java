@@ -1,12 +1,12 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.ControlerAndData.UserData;
+import com.CinemaTicketBooking.Controler.UserController;
 
 import java.util.Scanner;
 
 public class AuthenticateUser {
     public static boolean AuthUser(){
-        UserData userData = new UserData();
+        UserController userController = new UserController();
         Scanner console = new Scanner(System.in);
 
         System.out.println("Authentication");
@@ -14,7 +14,7 @@ public class AuthenticateUser {
             System.out.println("Enter your username: ");
             String userName = console.next();
 
-            if (userData.authenticateUser(userName)){
+            if (userController.authenticateUser(userName)){
                 System.out.println("Successful Authenticated from AuthenticationUser");
                 return true;
             }else{

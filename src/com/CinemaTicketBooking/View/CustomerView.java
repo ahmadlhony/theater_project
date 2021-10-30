@@ -9,8 +9,8 @@ public class CustomerView {
         while (true){
             System.out.println("Menu: " +
                     "\n1.book a seat" +
-                    "\n2.cancel a reservation\n" +
-                    "]n0.Quit");
+                    "\n2.cancel a reservation" +
+                    "\n0.Quit");
             int select = console.nextInt();
             if (select==0){
                 break;

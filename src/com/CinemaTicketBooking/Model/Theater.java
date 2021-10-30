@@ -77,6 +77,7 @@ public class Theater implements Serializable {
         }
         this.movie=null;
         isBooked=false;
+        seatsList.stream().filter(Seat::isBooked).forEach(Seat::unBookSeat);
         return true;
     }
 

@@ -1,12 +1,12 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.ControlerAndData.UserData;
+import com.CinemaTicketBooking.Controler.UserController;
 
 import java.util.Scanner;
 
 public class AddingUser {
     public static boolean addUser(){
-        UserData userData = new UserData();
+        UserController userController = new UserController();
         while (true){
             Scanner console = new Scanner(System.in);
             System.out.println("Enter a UserName");
@@ -17,7 +17,7 @@ public class AddingUser {
             if (admin==1)
                 isAdmin=true;
 
-            return userData.addUser(userName, isAdmin);
+            return userController.addUser(userName, isAdmin);
 
         }
     }

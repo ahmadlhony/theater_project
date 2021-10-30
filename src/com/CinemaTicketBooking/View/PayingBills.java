@@ -1,37 +1,34 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.ControlerAndData.SaveData;
-import com.CinemaTicketBooking.ControlerAndData.SeatTicket;
-import com.CinemaTicketBooking.ControlerAndData.UserData;
-import com.CinemaTicketBooking.Model.Bill;
+import com.CinemaTicketBooking.Controler.BillController;
+import com.CinemaTicketBooking.Controler.SeatTicket;
+import com.CinemaTicketBooking.Controler.UserController;
+import com.CinemaTicketBooking.Model.Data.BillData;
 import com.CinemaTicketBooking.Model.Ticket;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+
 
 public class PayingBills {
-    private static AtomicInteger BILL_ID_GENERATOR;
-    private static List<Bill> billList = new ArrayList<>();
-    private static SaveData<Bill> billSaveData = new SaveData<>("files/bills.txt");
+    private BillController billController = new BillController();
 
-    //have you booked seat ? payBills : booking seats
+
     public boolean start(String userName){
+        List<Ticket> tickets;
         int total=0;
-        UserData userData = new UserData();
-        if (!userData.isUserExist(userName)){
-            System.out.println("Sorry this User does not exist.");
+
+        try {
+            tickets= billController.getUserTicketForBilling(userName);
+        }catch (NullPointerException e){
+            System.out.println("null pointer exception #PayingBills*start");
             return false;
         }
-        var tickets = SeatTicket.getUserTickets(userName);
-        if (tickets.isEmpty()){
-            System.out.println("You dont have reservation");
-        }
+
         System.out.println("        *Cinema Ticket Booking System*      ");
         System.out.println("Date: "+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "         "+
-                "Admin: "+ UserData.getAuthUser());
+                "Admin: "+ UserController.getAuthUser());
         System.out.println("---------------------");
         for (Ticket ticket:tickets){
             System.out.println("SeatId: "+ticket.getSeatId() + "    Seat Position: " +ticket.getSeatRow()+ticket.getSeatColumn() +
@@ -42,26 +39,14 @@ public class PayingBills {
         }
         System.out.println("---------------------");
         System.out.println();
-        System.out.println("Your total is: "+ total);
+        System.out.println("Your total is: "+ total+"$");
         System.out.println("        *Have a great show*");
         System.out.println();
-        Bill bill = new Bill(BILL_ID_GENERATOR.getAndIncrement(),total,tickets);
-        billList.add(bill);
-        if(!SeatTicket.removeAllTicketForUser(userName))
+
+        if(!billController.removeTickets(userName))
             return false;
-        return billSaveData.saveListToFile(billList);
+        return billController.addBill(total,tickets);
 
-    }
-
-    public void fetchId(){
-        BILL_ID_GENERATOR = new AtomicInteger(billList.size()+1);
-
-    }
-
-
-    public void fetchAndSetBillList(){
-        billList = billSaveData.openList();
-        fetchId();
     }
 
 }
