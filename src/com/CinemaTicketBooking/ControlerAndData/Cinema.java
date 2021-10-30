@@ -44,12 +44,12 @@ public class Cinema {
 
         bookedShows.put(theaterItemInList(theaterId,showTime),movieName);
 
-        if(!theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName))) {
+        if(!theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName).get())) {
             return false;
         }
 
         MovieData movieData = new MovieData();
-        theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName));
+        theaters.get(theaterItem).bookTheater(movieData.getMovieByName(movieName).get());
 
         return cinemaSaveData.saveListToFile(theaters);
     }

@@ -4,6 +4,7 @@ import com.CinemaTicketBooking.Model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MovieData {
@@ -21,7 +22,7 @@ public class MovieData {
     }
 
     public boolean addMovie(String movieName){
-        if (getMovieByName(movieName)!=null){
+        if (getMovieByName(movieName).isPresent()){
             System.out.println("Movie is already Available");
             return false;
         }
@@ -30,14 +31,15 @@ public class MovieData {
         return movieSaveData.saveListToFile(movies);
     }
 
-    public Movie getMovieByName(String movieName){
+    public Optional<Movie> getMovieByName(String movieName){
 //        for(Movie movie:movies){
 //            if (movie.getMovieName().equals(movieName))
 //                return movie;
 //        }
 //
 //        System.out.println("MovieName not exist");
-        return movies.stream().filter(movie -> movie.getMovieName().equals(movieName)).findAny().get();
+
+        return movies.stream().filter(movie -> movie.getMovieName().equals(movieName)).findAny();
     }
 
     public boolean isMovieExist(String movieName){
