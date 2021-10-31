@@ -19,10 +19,10 @@ public class PayingBills {
         List<Ticket> tickets;
         int total=0;
 
-        try {
-            tickets= billController.getUserTicketForBilling(userName);
-        }catch (NullPointerException e){
-            System.out.println("null pointer exception #PayingBills*start");
+
+        tickets= billController.getUserTicketForBilling(userName);
+        if (tickets==null){
+            System.out.println("Null pointer #PayingBills*start");
             return false;
         }
 
@@ -30,13 +30,15 @@ public class PayingBills {
         System.out.println("Date: "+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "         "+
                 "Admin: "+ UserController.getAuthUser());
         System.out.println("---------------------");
-        for (Ticket ticket:tickets){
-            System.out.println("SeatId: "+ticket.getSeatId() + "    Seat Position: " +ticket.getSeatRow()+ticket.getSeatColumn() +
-                    "       Movie : " + ticket.getMovie().getMovieName()+
-                    "\nTheater: " + ticket.getTheaterId() + "       Show Time: " + ticket.getShowTime()+"    Price: 5$");
+
+        for (Ticket ticket : tickets) {
+            System.out.println("SeatId: " + ticket.getSeatId() + "    Seat Position: " + ticket.getSeatRow() + ticket.getSeatColumn() +
+                    "       Movie : " + ticket.getMovie().getMovieName() +
+                    "\nTheater: " + ticket.getTheaterId() + "       Show Time: " + ticket.getShowTime() + "    Price: 5$");
             System.out.println();
-            total+=5;
+            total += 5;
         }
+
         System.out.println("---------------------");
         System.out.println();
         System.out.println("Your total is: "+ total+"$");
