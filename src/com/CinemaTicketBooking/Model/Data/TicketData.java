@@ -1,13 +1,12 @@
 package com.CinemaTicketBooking.Model.Data;
 
-import com.CinemaTicketBooking.Controler.Cinema;
-import com.CinemaTicketBooking.Controler.SaveData;
+import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Controler.UserController;
 import com.CinemaTicketBooking.Model.Movie;
+import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Ticket;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -15,19 +14,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class TicketData {
     private static AtomicInteger Ticket_ID_GENERATOR;
 
-    private static List<Ticket> ticketList = new ArrayList<>();
-    private static Map<String, List<Ticket>> userTickets  = new HashMap<>();
+    private static List<Ticket> ticketList;
+    private static Map<String, List<Ticket>> userTickets;
 
-    private static SaveData<Ticket> ticketListSaveData = new SaveData<>("files/tickets.txt");
-    private static SaveData<Ticket> userTicketsSaveData = new SaveData<>("files/userTickets.txt");
+    private ClientServerController<Ticket> ticketListClientServerController = new ClientServerController<>();
+    private ClientServerController<Ticket> userTicketsClientServerController = new ClientServerController<>();
 
     public void fetchAndSetTicketList(){
-        ticketList = ticketListSaveData.openList();
+        Packet<Ticket> ticketPacket = new Packet<>(10);
+        ticketList = ticketListClientServerController.openList(ticketPacket);
         fetchTicketId();
     }
 
     public void fetchAndSetUserTicket(){
-        userTickets = userTicketsSaveData.openMap();
+        Packet<Ticket> ticketPacket = new Packet<>(12);
+        userTickets = userTicketsClientServerController.openMap(ticketPacket);
     }
 
     private void fetchTicketId(){
@@ -42,16 +43,21 @@ public class TicketData {
         Ticket ticket = new Ticket(Ticket_ID_GENERATOR.getAndIncrement(),theaterId,showTime,seatId,row,column,movie);
         userTickets.get(UserController.getAuthUser().getUserName()).add(ticket);
         ticketList.add(ticket);
+        Packet<Ticket> userTicketPacket = new Packet<>(11);
+        userTicketPacket.setMap(userTickets);
+        Packet<Ticket> ticketPacket = new Packet<>(9);
+        ticketPacket.setItem(ticketList);
 
 
-        return ticketListSaveData.saveListToFile(ticketList)
-                && userTicketsSaveData.saveMapToFile(userTickets);
+        return ticketListClientServerController.saveListToFile(ticketPacket)
+                && userTicketsClientServerController.saveListToFile(userTicketPacket);
 
     }
 
     public boolean removeAllTicketForUser(String userName){
         userTickets.remove(userName);
-        return userTicketsSaveData.saveMapToFile(userTickets);
+        Packet<Ticket> ticketPacket = new Packet<>(11);
+        return userTicketsClientServerController.saveListToFile(ticketPacket);
     }
 
 

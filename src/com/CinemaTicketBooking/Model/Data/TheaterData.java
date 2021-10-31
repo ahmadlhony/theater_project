@@ -1,8 +1,8 @@
 package com.CinemaTicketBooking.Model.Data;
 
-import com.CinemaTicketBooking.Controler.MovieController;
-import com.CinemaTicketBooking.Controler.SaveData;
+import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Model.Movie;
+import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Theater;
 
 import java.util.ArrayList;
@@ -12,12 +12,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class TheaterData {
-    private static SaveData<Theater> cinemaSaveData = new SaveData<>("files/theaters.txt");
+    private static ClientServerController<Theater> cinemaClientServerController = new ClientServerController<>();
     private static List<Theater> theaters = new ArrayList<>();
     private static Map<Integer, String> bookedShows = new HashMap<>();
 
     public void fetchAndSetTheaters(){
-        theaters = cinemaSaveData.openList();
+        Packet<Theater> theaterPacket = new Packet<>(6);
+        theaters = cinemaClientServerController.openList(theaterPacket);
         fetchAndSetBookedShow();
     }
 
@@ -38,7 +39,9 @@ public class TheaterData {
             return false;
         }
         fetchAndSetBookedShow();
-        return cinemaSaveData.saveListToFile(theaters);
+        Packet<Theater> theaterPacket = new Packet<>(5);
+        theaterPacket.setItem(theaters);
+        return cinemaClientServerController.saveListToFile(theaterPacket);
     }
 
     public boolean UnBookShow(int theaterItem){
@@ -50,8 +53,9 @@ public class TheaterData {
         if(!theaters.get(theaterItem).unBookTheater())
             return false;
         bookedShows.remove(theaterItem);
-
-        return cinemaSaveData.saveListToFile(theaters);
+        Packet<Theater> theaterPacket = new Packet<>(5);
+        theaterPacket.setItem(theaters);
+        return cinemaClientServerController.saveListToFile(theaterPacket);
     }
 
     private int theaterItemInList(int theaterId, String showTime){
@@ -71,6 +75,7 @@ public class TheaterData {
         return (theaterId+temp)-1;
     }
 
+    //take this to controller
     public List<Theater> availableShowTime() {
         return theaters.stream()
                 .filter(theater ->!bookedShows.containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
@@ -93,7 +98,9 @@ public class TheaterData {
         if(!theaters.get(theaterItem).bookSeat(seatId))
             return false;
 
-        return cinemaSaveData.saveListToFile(theaters);
+        Packet<Theater> theaterPacket = new Packet<>(5);
+        theaterPacket.setItem(theaters);
+        return cinemaClientServerController.saveListToFile(theaterPacket);
     }
 
     public boolean unBookSeat(int theaterItem,int seatId){
@@ -106,6 +113,8 @@ public class TheaterData {
             return false;
         }
 
-        return cinemaSaveData.saveListToFile(theaters);
+        Packet<Theater> theaterPacket = new Packet<>(5);
+        theaterPacket.setItem(theaters);
+        return cinemaClientServerController.saveListToFile(theaterPacket);
     }
 }

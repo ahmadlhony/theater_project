@@ -1,31 +1,34 @@
 package com.CinemaTicketBooking.Model.Data;
 
-import com.CinemaTicketBooking.Controler.SaveData;
+import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Model.Movie;
+import com.CinemaTicketBooking.Model.Packet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MovieData {
     private static AtomicInteger MOVIE_ID_GENERATOR ;
-    private static SaveData<Movie> movieSaveData = new SaveData<>("files/movies.txt");
+    private static ClientServerController<Movie> movieClientServerController = new ClientServerController<>();
     private static List<Movie> movies = new ArrayList<>();
 
     public void fetchAndSetMovies(){
-        movies = movieSaveData.openList();
+        Packet<Movie> moviePacket = new Packet<>(4);
+        movies = movieClientServerController.openList(moviePacket);
         fetchMovieId();
     }
 
     private void fetchMovieId(){
-        MOVIE_ID_GENERATOR = new AtomicInteger(movies.get(movies.size()-1).getMovieId()+1);
+        MOVIE_ID_GENERATOR = new AtomicInteger(movies.size());
     }
 
     public boolean addMovie(String movieName){
         Movie movie = new Movie(MOVIE_ID_GENERATOR.getAndIncrement(),movieName);
         movies.add(movie);
-        return movieSaveData.saveListToFile(movies);
+        Packet<Movie> moviePacket = new Packet<>(3);
+        moviePacket.setItem(movies);
+        return movieClientServerController.saveListToFile(moviePacket);
     }
 
     public List<Movie> getMovies(){

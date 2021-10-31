@@ -1,7 +1,10 @@
-package com.CinemaTicketBooking.Controler;
+package com.CinemaTicketBooking.Controler.Server;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SaveData<T> {
     String path ;
@@ -55,23 +58,16 @@ public class SaveData<T> {
     public Map<String,List<T>> openMap(){
         Map<String,List<T>> map = new HashMap<>();
         try {
-
-
             FileInputStream file = new FileInputStream(path);
             ObjectInputStream get = new ObjectInputStream(file);
             map = (Map<String,List<T>>) get.readObject();
-
-
             file.close();
             get.close();
-
-            //open and be ready for output
-
 
         } catch (FileNotFoundException e) {
             System.out.println("File not found "+ path);
         } catch (IOException e) {
-            System.out.println("Error initializing stream"+e.getMessage());
+            System.out.println("Error initializing stream"+e.getMessage()+path);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -80,11 +76,12 @@ public class SaveData<T> {
 
     public boolean saveMapToFile(Map<String,List<T>> map){
         try{
-            FileOutputStream f = new FileOutputStream(path);
-            ObjectOutputStream o = new ObjectOutputStream(f);
-            o.writeObject(map);
-            o.close();
-            f.close();
+            FileOutputStream fileOut = new FileOutputStream(path);
+            ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+            objectOut.writeObject(map);
+            System.out.println("Map saved to FIle #SaveData*saveMapToFile");
+            objectOut.close();
+            fileOut.close();
 
         } catch (FileNotFoundException e){
             System.out.println("File not found Exception. #SaveData*addMovie");
