@@ -17,7 +17,6 @@ public class SeatTicket {
             return false;
         }
         return ticketData.addTicket(theaterId, showTime, seatId, row, column, movie);
-
     }
 
     public boolean removeAllTicketForUser(String userName){

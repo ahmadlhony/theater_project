@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public class StartView {
     public static void start(){
-        FetchAndSetData.fetchAndSeatData();
+        FetchAndSetData.fetchAndSetAllData();
         Scanner console = new Scanner(System.in);
         System.out.println("Welcome to Cinema Ticket Booking");
         while(true){

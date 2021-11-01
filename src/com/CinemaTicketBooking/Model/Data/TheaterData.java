@@ -76,11 +76,11 @@ public class TheaterData {
     }
 
     //take this to controller
-    public List<Theater> availableShowTime() {
-        return theaters.stream()
-                .filter(theater ->!bookedShows.containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
-                .collect(Collectors.toList());
-    }
+//    public List<Theater> availableShowTime() {
+//        return theaters.stream()
+//                .filter(theater ->!bookedShows.containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
+//                .collect(Collectors.toList());
+//    }
 
     public List<Theater> getTheaters() {
         return theaters;

@@ -24,7 +24,7 @@ public class ClientServerController<T> {
     public List<T> openList(Packet<T> packet) {
         List<T> list = new ArrayList<>();
         try (Socket socket = new Socket("localhost",5000)){
-            socket.setSoTimeout(2000);
+//            socket.setSoTimeout(1500);
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
             Request request = new Request(packet.getMessage(), packet);
@@ -85,7 +85,7 @@ public class ClientServerController<T> {
         Map<String,List<T>> map = new HashMap<>();
 
         try (Socket socket = new Socket("localhost",5000)){
-            socket.setSoTimeout(2000);
+//            socket.setSoTimeout(2000);
 
             ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());

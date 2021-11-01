@@ -88,7 +88,9 @@ public class Cinema {
 
     public List<Theater> availableShowTime() {
         TheaterData theaterData = new TheaterData();
-        return theaterData.availableShowTime();
+        return theaterData.getTheaters().stream()
+                .filter(theater ->!theaterData.getBookedShows().containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
+                .collect(Collectors.toList());
     }
 
     public void availableShows(){
@@ -96,11 +98,16 @@ public class Cinema {
                 .forEach(theater ->  System.out.println("Theater: " + theater.getTheaterId()+"  is Available at: "+theater.getShowTime()));
     }
 
-    public void availableMovieIsInShow(){
+    public boolean availableMovieIsInShow(){
         TheaterData theaterData = new TheaterData();
         var bookedShows = theaterData.getBookedShows();
+        if(bookedShows.isEmpty()){
+            System.out.println("No Show Available. #Cinema*availableMovieInShow");
+            return false;
+        }
         System.out.println("Available Movie Shows: ");
         bookedShows.forEach((k,v) -> System.out.println(theaterData.getTheaters().get(k)));
+        return true;
     }
 
     public String showIndexToShowTime(int index){

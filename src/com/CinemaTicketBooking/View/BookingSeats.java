@@ -1,9 +1,6 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.Controler.Cinema;
-import com.CinemaTicketBooking.Controler.MovieController;
-import com.CinemaTicketBooking.Controler.SeatTicket;
-import com.CinemaTicketBooking.Controler.UserController;
+import com.CinemaTicketBooking.Controler.*;
 
 import java.util.Scanner;
 
@@ -14,11 +11,18 @@ public class BookingSeats {
         while (true) {
             Cinema cinema = new Cinema();
             Scanner console = new Scanner(System.in);
+            FetchAndSetData.fetchAndSetTicketData();
+            FetchAndSetData.fetchAndSetTheaterData();
 
             System.out.println("*Booking Seat*");
-            cinema.availableMovieIsInShow();
+            if(!cinema.availableMovieIsInShow()){
+                return false;
+            }
             System.out.println("\n Enter theater you want: 0 to Quit");
             int selectedTheaterId = console.nextInt();
+            if (selectedTheaterId==0){
+                break;
+            }
             System.out.println("Which Time ? " +
                     "1.2:00 \n2.5:00 \n3.8:00 \n0.Quit");
             int showIndex = console.nextInt();

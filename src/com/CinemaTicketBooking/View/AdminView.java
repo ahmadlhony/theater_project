@@ -1,6 +1,7 @@
 package com.CinemaTicketBooking.View;
 
 import com.CinemaTicketBooking.Controler.Cinema;
+import com.CinemaTicketBooking.Controler.FetchAndSetData;
 import com.CinemaTicketBooking.Controler.MovieController;
 import com.CinemaTicketBooking.Controler.UserController;
 
@@ -29,14 +30,19 @@ public class AdminView {
             int menuAns = console.nextInt();
             if (menuAns==1){
                 while (true) {
+
                     System.out.println("Have you reserved seat ? " +
                             "\n1.Yes" +
                             "\n2.No" +
                             "\n0.Back");
                     int reservedSeatAns = console.nextInt();
                     if (reservedSeatAns == 1) {
+                        FetchAndSetData.fetchAndSetBillData();
+                        FetchAndSetData.fetchAndSetTicketData();
+
                         System.out.println("Please Enter your Username: ");
                         String userName = console.next();
+                        FetchAndSetData.fetchAndSetTheaterData();
                         if(payingBills.start(userName)){
                             System.out.println("Complete #AdminView*payingBill1");
                             break;
@@ -44,6 +50,7 @@ public class AdminView {
 
 
                     } else if (reservedSeatAns == 2) {
+                        FetchAndSetData.fetchAndSetTheaterData();
                         System.out.println("Please reserve your seat. ");
                         BookingSeats.startBookingSeat();
                     }else if (reservedSeatAns==0){
@@ -52,6 +59,7 @@ public class AdminView {
                 }
 
             }else if(menuAns==2){
+                FetchAndSetData.fetchAndSetTheaterData();
                 BookingSeats.startBookingSeat();
 
 
@@ -66,6 +74,7 @@ public class AdminView {
 
 
             }else if(menuAns==4){
+                FetchAndSetData.fetchAndSetTheaterData();
                 System.out.println();
                 movieController.availableMovies();
                 System.out.println("Enter Movie Name: ");
@@ -88,8 +97,11 @@ public class AdminView {
 
 
             }else if(menuAns==5){
+                FetchAndSetData.fetchAndSetTheaterData();
                 System.out.println("\n*Cancel Show*");
-                cinema.availableMovieIsInShow();
+                if(!cinema.availableMovieIsInShow()){
+                    continue;
+                }
                 System.out.println("Which show you want to Delete, Enter theaterId");
                 int theaterId = console.nextInt();
                 System.out.println("Which Time ? "+
@@ -102,13 +114,11 @@ public class AdminView {
                 }
 
             }else if(menuAns==6){
+                FetchAndSetData.fetchAndSetTicketData();
                 BookingSeats.cancelReservation();
-
             }else if(menuAns==0){
                 return;
             }
-
-
         }
 
     }
