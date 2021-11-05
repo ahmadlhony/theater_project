@@ -15,7 +15,11 @@ public class MovieData {
 
     public void fetchAndSetMovies(){
         Packet<Movie> moviePacket = new Packet<>(4);
-        movies = movieClientServerController.openList(moviePacket);
+        try {
+            movies = movieClientServerController.get(moviePacket).getItem();
+        }catch (NullPointerException e){
+            System.out.println("Movies is null #MovieData*fetchAndSetMovies");
+        }
         fetchMovieId();
     }
 
@@ -28,7 +32,7 @@ public class MovieData {
         movies.add(movie);
         Packet<Movie> moviePacket = new Packet<>(3);
         moviePacket.setItem(movies);
-        return movieClientServerController.saveListToFile(moviePacket);
+        return movieClientServerController.post(moviePacket);
     }
 
     public List<Movie> getMovies(){

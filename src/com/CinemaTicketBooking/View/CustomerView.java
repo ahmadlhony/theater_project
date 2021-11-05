@@ -1,5 +1,8 @@
 package com.CinemaTicketBooking.View;
 
+import com.CinemaTicketBooking.Controler.ClientServerController;
+import com.CinemaTicketBooking.Controler.FetchAndSetData;
+
 import java.util.Scanner;
 
 public class CustomerView {
@@ -13,10 +16,14 @@ public class CustomerView {
                     "\n0.Quit");
             int select = console.nextInt();
             if (select==0){
+
+                ClientServerController.stopConnection();
                 break;
             }else if (select==1){
+                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.startBookingSeat();
             }else if(select==2){
+                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.cancelReservation();
             }
 

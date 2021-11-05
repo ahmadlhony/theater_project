@@ -1,13 +1,18 @@
 package com.CinemaTicketBooking.View;
 
+import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Controler.FetchAndSetData;
 import com.CinemaTicketBooking.Controler.UserController;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Scanner;
 
 public class StartView {
+
     public static void start(){
-        FetchAndSetData.fetchAndSetAllData();
+        FetchAndSetData.fetchAndSetUserData();
         Scanner console = new Scanner(System.in);
         System.out.println("Welcome to Cinema Ticket Booking");
         while(true){
@@ -40,8 +45,10 @@ public class StartView {
                 }
             }else{
                 System.out.println("Bye");
+                ClientServerController.stopConnection();
                 break;
             }
         }
+        FetchAndSetData.fetchAndSetAllData();
     }
 }

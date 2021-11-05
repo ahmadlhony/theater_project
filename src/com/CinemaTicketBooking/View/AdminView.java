@@ -1,10 +1,8 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.Controler.Cinema;
-import com.CinemaTicketBooking.Controler.FetchAndSetData;
-import com.CinemaTicketBooking.Controler.MovieController;
-import com.CinemaTicketBooking.Controler.UserController;
+import com.CinemaTicketBooking.Controler.*;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class AdminView {
@@ -30,7 +28,7 @@ public class AdminView {
             int menuAns = console.nextInt();
             if (menuAns==1){
                 while (true) {
-
+                FetchAndSetData.fetchAndSetAllData();
                     System.out.println("Have you reserved seat ? " +
                             "\n1.Yes" +
                             "\n2.No" +
@@ -59,22 +57,20 @@ public class AdminView {
                 }
 
             }else if(menuAns==2){
-                FetchAndSetData.fetchAndSetTheaterData();
+                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.startBookingSeat();
-
-
             }else if(menuAns==3){
+                FetchAndSetData.fetchAndSetAllData();
                 System.out.println("\n Enter Movie Name: ");
                 String movieName = console.next();
 //                console.nextLine();
-
                 if(movieController.addMovie(movieName)){
                     System.out.println("Added successfully AdminView\n");
                 }
 
 
             }else if(menuAns==4){
-                FetchAndSetData.fetchAndSetTheaterData();
+                FetchAndSetData.fetchAndSetAllData();
                 System.out.println();
                 movieController.availableMovies();
                 System.out.println("Enter Movie Name: ");
@@ -97,7 +93,7 @@ public class AdminView {
 
 
             }else if(menuAns==5){
-                FetchAndSetData.fetchAndSetTheaterData();
+                FetchAndSetData.fetchAndSetAllData();
                 System.out.println("\n*Cancel Show*");
                 if(!cinema.availableMovieIsInShow()){
                     continue;
@@ -114,9 +110,10 @@ public class AdminView {
                 }
 
             }else if(menuAns==6){
-                FetchAndSetData.fetchAndSetTicketData();
+                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.cancelReservation();
             }else if(menuAns==0){
+                ClientServerController.stopConnection();
                 return;
             }
         }

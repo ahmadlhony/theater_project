@@ -18,7 +18,7 @@ public class BillData {
         billList.add(new Bill(BILL_ID_GENERATOR.getAndIncrement(),total,tickets));
         Packet<Bill> billPacket = new Packet<>(1);
         billPacket.setItem(billList);
-        return billClientServerController.saveListToFile(billPacket);
+        return billClientServerController.post(billPacket);
     }
 
     public void fetchId(){
@@ -29,7 +29,11 @@ public class BillData {
 
     public void fetchAndSetBillList(){
         Packet<Bill> billPacket = new Packet<>(2);
-        billList = billClientServerController.openList(billPacket);
+        try {
+            billList = billClientServerController.get(billPacket).getItem();
+        }catch (NullPointerException e){
+            System.out.println("Bill is null #BIllData*fetchAndSetBillList");
+        }
         fetchId();
     }
 }

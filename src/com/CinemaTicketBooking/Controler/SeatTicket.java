@@ -28,6 +28,10 @@ public class SeatTicket {
         }
 
         var tickets = getUserTickets(userName);
+        if (tickets==null){
+            System.out.println("NullPointerException #SeatTicket*RemoveAllTicketForUser");
+            return false;
+        }
 
         if(tickets.isEmpty()){
             System.out.println(userName+", don't have reservation. #SeatTicket*removeAllTicketForUser");
@@ -41,6 +45,10 @@ public class SeatTicket {
 
     public static List<Ticket> getUserTickets(String userName){
         List<Ticket> bucket = new ArrayList<>();
+        if(ticketData.getUserTickets()==null){
+//            System.out.println("NullPointerException #SeatTicket*RemoveAllTicketForUser");
+            return null;
+        }
 
         if (!ticketData.getUserTickets().containsKey(userName)){
             return bucket;

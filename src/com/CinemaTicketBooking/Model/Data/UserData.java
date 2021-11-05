@@ -16,7 +16,12 @@ public class UserData {
 
     public void fetchAndSetUsers(){
         Packet<User> userPacket = new Packet<>(8);
-        users = userClientServerController.openList(userPacket);
+        try{
+
+        users = userClientServerController.get(userPacket).getItem();
+        } catch (NullPointerException e){
+            System.out.println("Users is null #UserData*fetchAndSetUsers");
+        }
         fetchUserId();
     }
 
@@ -30,7 +35,7 @@ public class UserData {
         System.out.println("Successfully user Added #UserController*addUser");
         Packet<User> userPacket = new Packet<>(7);
         userPacket.setItem(users);
-        return userClientServerController.saveListToFile(userPacket);
+        return userClientServerController.post(userPacket);
     }
 
     public List<User> getUsers() {

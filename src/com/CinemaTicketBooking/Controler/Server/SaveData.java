@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SaveData<T> {
     String path ;
-    T obj ;
+//    T obj ;
 
     public SaveData(String path){
         this.path=path;

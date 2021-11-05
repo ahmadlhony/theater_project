@@ -22,13 +22,23 @@ public class TicketData {
 
     public void fetchAndSetTicketList(){
         Packet<Ticket> ticketPacket = new Packet<>(10);
-        ticketList = ticketListClientServerController.openList(ticketPacket);
+        try{
+
+        ticketList = ticketListClientServerController.get(ticketPacket).getItem();
+        } catch (NullPointerException e){
+            System.out.println("TicketList is null #TicketData*fetchAndSetTicketList");
+        }
         fetchTicketId();
     }
 
     public void fetchAndSetUserTicket(){
         Packet<Ticket> ticketPacket = new Packet<>(12);
-        userTickets = userTicketsClientServerController.openMap(ticketPacket);
+        try{
+
+        userTickets = userTicketsClientServerController.get(ticketPacket).getMap();
+        } catch (NullPointerException e){
+            System.out.println("UserTickets is null #TicketData*fetchAndSetUserTicket");
+        }
     }
 
     private void fetchTicketId(){
@@ -49,15 +59,15 @@ public class TicketData {
         ticketPacket.setItem(ticketList);
 
 
-        return ticketListClientServerController.saveListToFile(ticketPacket)
-                && userTicketsClientServerController.saveListToFile(userTicketPacket);
+        return ticketListClientServerController.post(ticketPacket)
+                && userTicketsClientServerController.post(userTicketPacket);
 
     }
 
     public boolean removeAllTicketForUser(String userName){
         userTickets.remove(userName);
         Packet<Ticket> ticketPacket = new Packet<>(11);
-        return userTicketsClientServerController.saveListToFile(ticketPacket);
+        return userTicketsClientServerController.post(ticketPacket);
     }
 
 

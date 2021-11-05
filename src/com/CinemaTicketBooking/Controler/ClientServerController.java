@@ -2,11 +2,9 @@ package com.CinemaTicketBooking.Controler;
 
 import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Request;
+import com.CinemaTicketBooking.View.StartView;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,28 +17,49 @@ public class ClientServerController<T> {
 //    public void setPacket(Packet<T> packet) {
 //        this.packet = packet;
 //    }
+    private static Socket socket;
+    private static  ObjectInputStream objectIn;
+    private static ObjectOutputStream objectOut;
 
-    @SuppressWarnings("unchecked")
-    public List<T> openList(Packet<T> packet) {
-        List<T> list = new ArrayList<>();
-        try (Socket socket = new Socket("localhost",5000)){
-//            socket.setSoTimeout(1500);
-            ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
-            Request request = new Request(packet.getMessage(), packet);
-            objectOut.writeObject(request);
-            Packet<T> response = (Packet<T>) objectIn.readObject();
+    public static void startConnection(){
+        try{
+            socket = new Socket("localhost",5000);
+            socket.setTcpNoDelay(true);
+            objectIn = new ObjectInputStream(socket.getInputStream());
+            objectOut = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            System.out.println("Connecting to server Successful");
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found SocketController*");
+        } catch (IOException e) {
+            System.out.println("Error initializing stream"+e.getMessage());
+        }
+    }
 
-            int message = response.getMessage();
-            if(message==1){
-                list = response.getItem();
-            }else{
-                System.out.println("Error: " + message);
-            }
+    public static void stopConnection() {
+        try {
+            objectOut.writeObject(new Packet(0));
             objectOut.close();
             objectIn.close();
             socket.close();
+        }catch (IOException e){
+            System.out.println("IOException ClientServerController*stopConnection");
+        }
+    }
 
+
+    @SuppressWarnings("unchecked")
+    public Packet<T> get(Packet<T> packet) {
+        List<T> list = new ArrayList<>();
+        try{
+            objectOut.writeObject(packet);
+            objectOut.flush();
+            Packet<T> response = (Packet<T>) objectIn.readObject();
+            int message = response.getMessage();
+            if(message!=1){
+                System.out.println("Error: " + message);
+                return null;
+            }
+            return response;
 
         } catch (FileNotFoundException e) {
             System.out.println("File not found " + packet.getMessage());
@@ -48,23 +67,20 @@ public class ClientServerController<T> {
             System.out.println("Error initializing stream"+e.getMessage());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            System.out.println("NullPointerException #ClientServerController*openList");
         }
-        return list;
+        return null;
+
     }
 
-    public boolean saveListToFile(Packet<T> packet){
-        try(Socket socket = new Socket("localhost",5000)) {
-            ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
-            Request request = new Request(packet.getMessage(), packet);
-            objectOut.writeObject(request);
+    public boolean post(Packet<T> packet){
+        try {
+            objectOut.writeObject(packet);
+            objectOut.flush();
             Packet<T> response = (Packet<T>) objectIn.readObject();
 
             int message = response.getMessage();
-
-            objectOut.close();
-            objectIn.close();
-            socket.close();
             return message == 1;
 
         } catch (FileNotFoundException e){
@@ -75,62 +91,40 @@ public class ClientServerController<T> {
             return false;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
+        }catch (NullPointerException e){
+            System.out.println("NullPointerException #ClientServerController*saveListToFile");
         }
         return true;
     }
 
 
-    @SuppressWarnings("unchecked")
-    public Map<String,List<T>> openMap(Packet<T> packet){
-        Map<String,List<T>> map = new HashMap<>();
-
-        try (Socket socket = new Socket("localhost",5000)){
-//            socket.setSoTimeout(2000);
-
-            ObjectInputStream objectIn = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream objectOut = new ObjectOutputStream(socket.getOutputStream());
-            Request request = new Request(packet.getMessage(), packet);
-            objectOut.writeObject(request);
-            Packet<T> response = (Packet<T>) objectIn.readObject();
-
-            int message = response.getMessage();
-            if(message==1){
-                map = response.getMap();
-            }else{
-                System.out.println("Error: " + message);
-            }
-            objectOut.close();
-            objectIn.close();
-            socket.close();
-
-
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found " + packet.getMessage());
-        } catch (IOException e) {
-            System.out.println("Error initializing stream"+e.getMessage());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
-
-//    public boolean saveMapToFile(Map<String,List<T>> map){
+//    @SuppressWarnings("unchecked")
+//    public Map<String,List<T>> openMap(Packet<T> packet){
+//        Map<String,List<T>> map = new HashMap<>();
+//
 //        try{
-//            FileOutputStream f = new FileOutputStream(path);
-//            ObjectOutputStream o = new ObjectOutputStream(f);
-//            o.writeObject(map);
-//            o.close();
-//            f.close();
+//            objectOut.writeObject(packet);
+//            objectOut.flush();
+//            Packet<T> response = (Packet<T>) objectIn.readObject();
+//            int message = response.getMessage();
+//            if(message==1){
+//                map = response.getMap();
+//            }else{
+//                System.out.println("Error: " + message);
+//            }
 //
-//        } catch (FileNotFoundException e){
-//            System.out.println("File not found Exception. #ClientServerController*addMovie");
-//            return false;
-//        } catch (IOException e){
-//            System.out.println("Error initializing stream. #ClientServerController*addMovie");
-//            return false;
+//
+//
+//        } catch (FileNotFoundException e) {
+//            System.out.println("File not found " + packet.getMessage());
+//        } catch (IOException e) {
+//            System.out.println("Error initializing stream"+e.getMessage());
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        }catch (NullPointerException e){
+//            System.out.println("NullPointerException #ClientServerController*openMap");
 //        }
-//        return true;
-//
+//        return map;
 //    }
 
 }

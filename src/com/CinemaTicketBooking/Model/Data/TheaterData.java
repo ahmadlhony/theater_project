@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class TheaterData {
     private static ClientServerController<Theater> cinemaClientServerController = new ClientServerController<>();
@@ -18,7 +17,12 @@ public class TheaterData {
 
     public void fetchAndSetTheaters(){
         Packet<Theater> theaterPacket = new Packet<>(6);
-        theaters = cinemaClientServerController.openList(theaterPacket);
+        try {
+
+        theaters = cinemaClientServerController.get(theaterPacket).getItem();
+        }catch (NullPointerException e){
+            System.out.println("Theaters is null #TheaterData*fetchAndSetTheaters");
+        }
         fetchAndSetBookedShow();
     }
 
@@ -41,7 +45,7 @@ public class TheaterData {
         fetchAndSetBookedShow();
         Packet<Theater> theaterPacket = new Packet<>(5);
         theaterPacket.setItem(theaters);
-        return cinemaClientServerController.saveListToFile(theaterPacket);
+        return cinemaClientServerController.post(theaterPacket);
     }
 
     public boolean UnBookShow(int theaterItem){
@@ -55,7 +59,7 @@ public class TheaterData {
         bookedShows.remove(theaterItem);
         Packet<Theater> theaterPacket = new Packet<>(5);
         theaterPacket.setItem(theaters);
-        return cinemaClientServerController.saveListToFile(theaterPacket);
+        return cinemaClientServerController.post(theaterPacket);
     }
 
     private int theaterItemInList(int theaterId, String showTime){
@@ -100,7 +104,7 @@ public class TheaterData {
 
         Packet<Theater> theaterPacket = new Packet<>(5);
         theaterPacket.setItem(theaters);
-        return cinemaClientServerController.saveListToFile(theaterPacket);
+        return cinemaClientServerController.post(theaterPacket);
     }
 
     public boolean unBookSeat(int theaterItem,int seatId){
@@ -115,6 +119,6 @@ public class TheaterData {
 
         Packet<Theater> theaterPacket = new Packet<>(5);
         theaterPacket.setItem(theaters);
-        return cinemaClientServerController.saveListToFile(theaterPacket);
+        return cinemaClientServerController.post(theaterPacket);
     }
 }
