@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class CustomerView {
     public static void start(){
+        FetchAndSetData.fetchAndSetAllData();
         Scanner console = new Scanner(System.in);
         System.out.println("*Customer Interface*");
         while (true){

@@ -151,29 +151,13 @@ public class PacketController extends Thread{
                     } else {
                         packet = new Packet(3);
                     }
-
-//                    try {
-//                        Thread.sleep(2000);
-//                    } catch (InterruptedException e) {
-//                        System.out.println("Thread Interrupted");
-//                    }
-
-    //                output.println("Echo from server "+ echoString);
-
                     System.out.println("Before OutputStream");
                     outStream.writeObject(packet);
                     outStream.flush();
                 }
-
-
-
-
-//            outStream.close();
-//            input.close();
-
-//            input.close();
-//            outStream.close();
-//            socket.setKeepAlive(true);
+            outStream.close();
+            input.close();
+            socket.close();
 
         }catch (IOException e){
             System.out.println("IOException: "+e.getMessage());

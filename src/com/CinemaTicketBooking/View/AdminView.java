@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class AdminView {
     public static void start(){
+        FetchAndSetData.fetchAndSetAllData();
         UserController userController = new UserController();
         MovieController movieController = new MovieController();
         Cinema cinema = new Cinema();
