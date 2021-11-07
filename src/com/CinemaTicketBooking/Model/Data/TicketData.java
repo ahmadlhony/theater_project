@@ -67,6 +67,7 @@ public class TicketData {
     public boolean removeAllTicketForUser(String userName){
         userTickets.remove(userName);
         Packet<Ticket> ticketPacket = new Packet<>(11);
+        ticketPacket.setMap(userTickets);
         return userTicketsClientServerController.post(ticketPacket);
     }
 

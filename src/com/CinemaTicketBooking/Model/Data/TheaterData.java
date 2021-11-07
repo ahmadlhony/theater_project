@@ -42,7 +42,6 @@ public class TheaterData {
         if(!theaters.get(theaterItem).bookTheater(movie)) {
             return false;
         }
-        fetchAndSetBookedShow();
         Packet<Theater> theaterPacket = new Packet<>(5);
         theaterPacket.setItem(theaters);
         return cinemaClientServerController.post(theaterPacket);
@@ -78,13 +77,6 @@ public class TheaterData {
         }
         return (theaterId+temp)-1;
     }
-
-    //take this to controller
-//    public List<Theater> availableShowTime() {
-//        return theaters.stream()
-//                .filter(theater ->!bookedShows.containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
-//                .collect(Collectors.toList());
-//    }
 
     public List<Theater> getTheaters() {
         return theaters;

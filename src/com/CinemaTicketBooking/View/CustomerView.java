@@ -1,5 +1,6 @@
 package com.CinemaTicketBooking.View;
 
+import com.CinemaTicketBooking.Controler.ClientServerConnection;
 import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Controler.FetchAndSetData;
 
@@ -18,7 +19,7 @@ public class CustomerView {
             int select = console.nextInt();
             if (select==0){
 
-                ClientServerController.stopConnection();
+                ClientServerConnection.stopConnection();
                 break;
             }else if (select==1){
                 FetchAndSetData.fetchAndSetAllData();

@@ -114,7 +114,7 @@ public class AdminView {
                 FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.cancelReservation();
             }else if(menuAns==0){
-                ClientServerController.stopConnection();
+                ClientServerConnection.stopConnection();
                 return;
             }
         }
