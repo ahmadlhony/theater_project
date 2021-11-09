@@ -2,6 +2,7 @@ package com.CinemaTicketBooking.Controler;
 import com.CinemaTicketBooking.Model.Data.MovieData;
 import com.CinemaTicketBooking.Model.Data.TheaterData;
 import com.CinemaTicketBooking.Model.Movie;
+import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Seat;
 import com.CinemaTicketBooking.Model.Theater;
 
@@ -10,35 +11,59 @@ import java.util.stream.Collectors;
 
 public class Cinema {
 
-
-
-    public boolean bookShow(int theaterId, String showTime,String movieName){
+    public Packet bookShow(int theaterId, String showTime, String movieName){
         TheaterData theaterData = new TheaterData();
+        Packet packet = new Packet(0);
         if (!showTime.equals("2:00") && !showTime.equals("5:00") && !showTime.equals("8:00")){
-            System.out.println("Showtime is not available. #Cinema*bookShow");
-            return false;
+            String massage = "Showtime is not available. #Server*Cinema*bookShow";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
         }
         if (!MovieController.isMovieExist(movieName)){
-            System.out.println("movie name in not exist. #Cinema*bookShow");
-            return false;
+            String massage ="movie name in not exist. #Server*Cinema*bookShow";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
         }
 
         int theaterItem = theaterItemInList(theaterId,showTime);
         Movie movie  = MovieController.getMovieByName(movieName).get();
-        return theaterData.bookShow(theaterItem,movie);
+        if(!theaterData.bookShow(theaterItem,movie)){
+            String massage ="bookShowFailed. #Server*Cinema*bookShow";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
+        }
+        String message = "Show Booked Successfully";
+        packet.setMessage(1);
+        packet.setMessageString(message);
+        return packet;
     }
 
-    public boolean UnBookShow(int theaterId, String showTime){
+    public Packet UnBookShow(int theaterId, String showTime){
         TheaterData theaterData = new TheaterData();
-        var bookedShows = theaterData.getBookedShows();
+        Packet packet = new Packet(0);
         if (!showTime.equals("2:00") && !showTime.equals("5:00") && !showTime.equals("8:00")){
-            System.out.println("Showtime is not available.");
-            return false;
+            String massage = "Showtime is not available. #Server*Cinema*bookShow";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
         }
         int theaterItem = theaterItemInList(theaterId,showTime);
-        return theaterData.UnBookShow(theaterItem);
+        if(!theaterData.UnBookShow(theaterItem)){
+            String massage = "Unbook SHow unsuccessful. #Server*Cinema*bookShow";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
+        }
+        String message = "Show UnBooked Successfully";
+        packet.setMessage(1);
+        packet.setMessageString(message);
+        return packet;
     }
 
+    //server
     public Theater getBookedTheater(int theaterId,String showTime){
         TheaterData theaterData = new TheaterData();
         int theaterItem = theaterItemInList(theaterId,showTime);
@@ -49,26 +74,31 @@ public class Cinema {
         return theaterData.getTheaters().get(theaterItem);
     }
 
-    public boolean showAvailableSeat(int theaterId,String showTime) {
+    public Packet showAvailableSeat(int theaterId,String showTime) {
+        Packet packet = new Packet(0);
 
         System.out.println("\n*available Seats are for theater: "+theaterId+", at: "+showTime  +"*");
 
         List<Seat> seats;
+        List<String> items = new ArrayList<>(56);
         try {
             seats=getBookedTheater(theaterId,showTime).availableSeats();
         }catch (NullPointerException e){
-            System.out.println("null pointer exception");
-            return false;
+            String message = "No Seats available #Server*Cinema*showAvailableSeat";
+            System.out.println(message);
+            packet.setMessageString(message);
+            return packet;
         }
 
         seats.forEach(seat -> {
-            System.out.print(seat);
-            if (seat.getSeatId()==14 || seat.getSeatId()==28 || seat.getSeatId()==42)
-                System.out.println();
+            items.add(seat.toString());
         });
-        return true;
+        packet.setItem(items);
+        packet.setMessage(1);
+        return packet;
     }
 
+    //server
     private int theaterItemInList(int theaterId, String showTime){
         if (theaterId<1 || theaterId>3){
             System.out.println("Theater Id not available.");
@@ -86,6 +116,7 @@ public class Cinema {
         return (theaterId+temp)-1;
     }
 
+    //server
     public List<Theater> availableShowTime() {
         TheaterData theaterData = new TheaterData();
         return theaterData.getTheaters().stream()
@@ -93,21 +124,30 @@ public class Cinema {
                 .collect(Collectors.toList());
     }
 
-    public void availableShows(){
+    public Packet availableShows(){
+        Packet packet = new Packet(1);
+        List<String> items= new ArrayList<>();
         availableShowTime()
-                .forEach(theater ->  System.out.println("Theater: " + theater.getTheaterId()+"  is Available at: "+theater.getShowTime()));
+                .forEach(theater ->  items.add("Theater: " + theater.getTheaterId()+"  is Available at: "+theater.getShowTime()));
+        packet.setItem(items);
+        return packet;
     }
 
-    public boolean availableMovieIsInShow(){
+    public Packet availableMovieIsInShow(){
         TheaterData theaterData = new TheaterData();
         var bookedShows = theaterData.getBookedShows();
+        var packet = new Packet(0);
         if(bookedShows.isEmpty()){
-            System.out.println("No Show Available. #Cinema*availableMovieInShow");
-            return false;
+            String message = "No Show Available. #Cinema*availableMovieInShow";
+            System.out.println(message);
+            packet.setMessageString(message);
+            return packet;
         }
-        System.out.println("Available Movie Shows: ");
-        bookedShows.forEach((k,v) -> System.out.println(theaterData.getTheaters().get(k)));
-        return true;
+        List<String> items = new ArrayList<>(9);
+        bookedShows.forEach((k,v) -> items.add(theaterData.getTheaters().get(k).toString()));
+        packet.setMessage(1);
+        packet.setItem(items);
+        return packet;
     }
 
     public String showIndexToShowTime(int index){
@@ -123,11 +163,13 @@ public class Cinema {
         }
     }
 
+    //server get called by SeatTicket*addTicket()
     public boolean bookSeat(int theaterId,String showTime,int seatId){
         TheaterData theaterData = new TheaterData();
         return theaterData.bookSeat(theaterItemInList(theaterId,showTime),seatId);
     }
 
+    //server get called by SeatTicket*removeAllTicket()
     public boolean unBookSeat(int theaterId,String showTime,int seatId){
         TheaterData theaterData = new TheaterData();
         return theaterData.unBookSeat(theaterItemInList(theaterId,showTime),seatId);

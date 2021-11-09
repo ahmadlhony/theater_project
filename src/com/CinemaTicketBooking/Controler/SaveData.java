@@ -1,4 +1,4 @@
-package com.CinemaTicketBooking.Controler.Server;
+package com.CinemaTicketBooking.Controler;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package com.CinemaTicketBooking.Model.Data;
 
-import com.CinemaTicketBooking.Controler.ClientServerController;
+import com.CinemaTicketBooking.Controler.SaveData;
 import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.User;
 
@@ -10,18 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class UserData {
     private static AtomicInteger USER_ID_GENERATOR;
-    private static ClientServerController<User> userClientServerController = new ClientServerController<>();
+    private static SaveData<User> userSaveData = new SaveData<>("files/users.txt");
 
     private static List<User> users = new ArrayList<>();
 
     public void fetchAndSetUsers(){
-        Packet<User> userPacket = new Packet<>(8);
-        try{
-
-        users = userClientServerController.get(userPacket).getItem();
-        } catch (NullPointerException e){
-            System.out.println("Users is null #UserData*fetchAndSetUsers");
-        }
+        users = userSaveData.openList();
         fetchUserId();
     }
 
@@ -33,12 +27,11 @@ public class UserData {
         var user = new User(USER_ID_GENERATOR.getAndIncrement(), userName.toLowerCase(), isAdmin);
         users.add(user);
         System.out.println("Successfully user Added #UserController*addUser");
-        Packet<User> userPacket = new Packet<>(7);
-        userPacket.setItem(users);
-        return userClientServerController.post(userPacket);
+        return userSaveData.saveListToFile(users);
     }
 
     public List<User> getUsers() {
+        fetchAndSetUsers();
         return users;
     }
 

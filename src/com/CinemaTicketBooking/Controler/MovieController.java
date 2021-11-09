@@ -2,6 +2,7 @@ package com.CinemaTicketBooking.Controler;
 
 import com.CinemaTicketBooking.Model.Data.MovieData;
 import com.CinemaTicketBooking.Model.Movie;
+import com.CinemaTicketBooking.Model.Packet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,13 +12,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MovieController {
 
 
-    public static boolean addMovie(String movieName){
+    public Packet addMovie(String movieName){
         MovieData movieData = new MovieData();
+        Packet packet = new Packet(0);
         if (getMovieByName(movieName).isPresent()){
-            System.out.println("Movie is already Available #MovieData*addMovie");
-            return false;
+            String massage = "Movie is already Available #Server*MovieData*addMovie";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
         }
-        return movieData.addMovie(movieName);
+
+        if(!movieData.addMovie(movieName)){
+            String massage = "movieData.addMovie() failed #Server*MovieData*addMovie";
+            System.out.println(massage);
+            packet.setMessageString(massage);
+            return packet;
+        }
+        packet.setMessage(1);
+        return packet;
     }
 
     public static boolean isMovieExist(String movieName){
@@ -25,16 +37,20 @@ public class MovieController {
         return movieData.getMovies().stream().anyMatch(m -> m.getMovieName().equals(movieName));
     }
 
+    //we dont need it in client
     public static Optional<Movie> getMovieByName(String movieName){
         MovieData movieData = new MovieData();
         return movieData.getMovies().stream().filter(movie -> movie.getMovieName().equals(movieName)).findAny();
     }
 
-    public void availableMovies(){
+    public Packet availableMovies(){
         MovieData movieData = new MovieData();
-        System.out.println("Available Movies: ");
-        movieData.getMovies().forEach(m -> System.out.println(m.getMovieName() + "."));
-        System.out.println();
+        Packet packet = new Packet(1);
+        List<String> items = new ArrayList<>(30);
+        movieData.getMovies().forEach(m -> items.add(m.getMovieName() + "."));
+        packet.setItem(items);
+        return packet;
+
     }
 
 }

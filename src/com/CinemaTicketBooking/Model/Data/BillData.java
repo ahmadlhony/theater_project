@@ -1,8 +1,7 @@
 package com.CinemaTicketBooking.Model.Data;
 
-import com.CinemaTicketBooking.Controler.ClientServerController;
+import com.CinemaTicketBooking.Controler.SaveData;
 import com.CinemaTicketBooking.Model.Bill;
-import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Ticket;
 
 import java.util.ArrayList;
@@ -12,13 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BillData {
     private static AtomicInteger BILL_ID_GENERATOR;
     private static List<Bill> billList = new ArrayList<>();
-    private static ClientServerController<Bill> billClientServerController = new ClientServerController<>();
+    private static SaveData<Bill> billSaveData = new SaveData<>("files/bills.txt");
 
     public boolean addBill(int total,List<Ticket> tickets){
         billList.add(new Bill(BILL_ID_GENERATOR.getAndIncrement(),total,tickets));
-        Packet<Bill> billPacket = new Packet<>(1);
-        billPacket.setItem(billList);
-        return billClientServerController.post(billPacket);
+        return billSaveData.saveListToFile(billList);
     }
 
     public void fetchId(){
@@ -28,9 +25,8 @@ public class BillData {
 
 
     public void fetchAndSetBillList(){
-        Packet<Bill> billPacket = new Packet<>(2);
         try {
-            billList = billClientServerController.get(billPacket).getItem();
+            billList = billSaveData.openList();
         }catch (NullPointerException e){
             System.out.println("Bill is null #BIllData*fetchAndSetBillList");
         }
