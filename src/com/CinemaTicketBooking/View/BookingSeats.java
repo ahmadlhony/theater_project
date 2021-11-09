@@ -62,7 +62,7 @@ public class BookingSeats {
             String userName = console.next();
             if (userController.isUserExist(userName)) {
                 Packet request = new Packet(7);
-                request.setUserName(UserController.getAuthUser());
+                request.setUserName(userName);
                 Packet response = ClientServerController.get(request);
                 if (response.getMessage() !=1) {
                     System.out.println(response.getMessageString());

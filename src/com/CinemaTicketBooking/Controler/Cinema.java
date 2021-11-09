@@ -8,6 +8,7 @@ public class Cinema {
         Packet request = new Packet(8);
         request.setTheaterId(theaterId);
         request.setShowTime(showTime);
+        request.setMovieName(movieName);
         Packet response = ClientServerController.get(request);
         if (response.getMessage() !=1) {
             System.out.println(response.getMessageString());
