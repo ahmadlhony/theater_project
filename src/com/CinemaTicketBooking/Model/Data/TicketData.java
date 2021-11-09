@@ -7,6 +7,7 @@ import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Ticket;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,7 +27,11 @@ public class TicketData {
     }
 
     public void fetchAndSetUserTicket(){
-        userTickets = userTicketsSaveData.openMap();
+        try {
+            userTickets = userTicketsSaveData.openMap();
+        }catch (NullPointerException e){
+            System.out.println("UserTicket null");
+        }
     }
 
     private void fetchTicketId(){
@@ -35,10 +40,20 @@ public class TicketData {
 
 
     public boolean addTicket(int theaterId,String showTime, int seatId,char row,int column, Movie movie,String userName){
+        fetchAndSetTicketList();
+        fetchAndSetUserTicket();
+        if (userTickets==null){
+            System.out.println("UserTickets is null");
+            userTickets = new HashMap<>();
+        }
         if (!userTickets.containsKey(userName)){
             userTickets.put(userName,new ArrayList<>());
         }
         Ticket ticket = new Ticket(Ticket_ID_GENERATOR.getAndIncrement(),theaterId,showTime,seatId,row,column,movie);
+        if (ticket==null){
+            System.out.println("Ticket is Null");
+            return false;
+        }
         userTickets.get(userName).add(ticket);
         ticketList.add(ticket);
         return ticketListSaveData.saveListToFile(ticketList)

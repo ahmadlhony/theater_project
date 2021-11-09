@@ -2,7 +2,6 @@ package com.CinemaTicketBooking.Model.Data;
 
 import com.CinemaTicketBooking.Controler.SaveData;
 import com.CinemaTicketBooking.Model.Movie;
-import com.CinemaTicketBooking.Model.Packet;
 import com.CinemaTicketBooking.Model.Theater;
 
 import java.util.ArrayList;
@@ -17,7 +16,6 @@ public class TheaterData {
 
     public void fetchAndSetTheaters(){
         theaters = cinemaSaveData.openList();
-
         fetchAndSetBookedShow();
     }
 

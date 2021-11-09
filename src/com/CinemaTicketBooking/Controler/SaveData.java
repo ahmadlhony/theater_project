@@ -28,7 +28,7 @@ public class SaveData<T> {
         } catch (FileNotFoundException e) {
             System.out.println("File not found " + path);
         } catch (IOException e) {
-            System.out.println("Error initializing stream"+e.getMessage());
+            System.out.println("Error initializing stream"+e.getMessage()+path);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -44,10 +44,8 @@ public class SaveData<T> {
             f.close();
 
         } catch (FileNotFoundException e){
-            System.out.println("File not found Exception. #SaveData*addMovie"+ path);
             return false;
         } catch (IOException e){
-            System.out.println("Error initializing stream. #SaveData*addMovie"+ path);
             return false;
         }
         return true;
@@ -61,13 +59,16 @@ public class SaveData<T> {
             FileInputStream file = new FileInputStream(path);
             ObjectInputStream get = new ObjectInputStream(file);
             map = (Map<String,List<T>>) get.readObject();
+            if (map.isEmpty()){
+                System.out.println("Map is Empty $Server*SaveData*openMap");
+            }
             file.close();
             get.close();
 
         } catch (FileNotFoundException e) {
             System.out.println("File not found "+ path);
         } catch (IOException e) {
-            System.out.println("Error initializing stream"+e.getMessage()+path);
+            System.out.println("Error initializing stream "+e.getMessage()+path);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -84,10 +85,10 @@ public class SaveData<T> {
             fileOut.close();
 
         } catch (FileNotFoundException e){
-            System.out.println("File not found Exception. #SaveData*addMovie");
+            System.out.println("File not found Exception. #SaveData*saveMapToFile");
             return false;
         } catch (IOException e){
-            System.out.println("Error initializing stream. #SaveData*addMovie");
+            System.out.println("Error initializing stream. #SaveData*saveMapToFile");
             return false;
         }
         return true;

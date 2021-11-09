@@ -25,11 +25,7 @@ public class BillData {
 
 
     public void fetchAndSetBillList(){
-        try {
-            billList = billSaveData.openList();
-        }catch (NullPointerException e){
-            System.out.println("Bill is null #BIllData*fetchAndSetBillList");
-        }
+        billList = billSaveData.openList();
         fetchId();
     }
 }

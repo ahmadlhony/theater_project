@@ -31,7 +31,7 @@ public class SeatTicket {
             packet.setMessageString(message);
             return packet;
         }
-        if(ticketData.addTicket(theaterId, showTime, seatId, rowCalculate(seatId)
+        if(!ticketData.addTicket(theaterId, showTime, seatId, rowCalculate(seatId)
                 , columnCalculate(seatId),movie ,userName)){
             message = "Ticket wont be added #Server*SeatTicket*addTicket";
             packet.setMessageString(message);
