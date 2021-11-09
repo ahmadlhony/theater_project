@@ -1,6 +1,7 @@
 package com.CinemaTicketBooking.View;
 
 import com.CinemaTicketBooking.Controler.*;
+import com.CinemaTicketBooking.Model.Packet;
 
 import java.util.Scanner;
 
@@ -11,9 +12,6 @@ public class BookingSeats {
         while (true) {
             Cinema cinema = new Cinema();
             Scanner console = new Scanner(System.in);
-            FetchAndSetData.fetchAndSetTicketData();
-            FetchAndSetData.fetchAndSetTheaterData();
-
             System.out.println("*Booking Seat*");
             if(!cinema.availableMovieIsInShow()){
                 return false;
@@ -38,7 +36,7 @@ public class BookingSeats {
             int selectedSeatId = console.nextInt();
 
 
-            if(seatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId,rowCalculate(selectedSeatId),columnCalculate(selectedSeatId),cinema.getBookedTheater(selectedTheaterId,selectedShowTime).getMovie())){
+            if(seatTicket.addTicket(selectedTheaterId,selectedShowTime,selectedSeatId)){
                 System.out.println("Do you want to book more Seat? \n1.Yes \n0.Exit");
                 int bookMoreSeatAns = console.nextInt();
                 if (bookMoreSeatAns==1){
@@ -63,8 +61,11 @@ public class BookingSeats {
             System.out.println("Please Enter your username: ");
             String userName = console.next();
             if (userController.isUserExist(userName)) {
-                if(!seatTicket.removeAllTicketForUser(userName)){
-                    System.out.println("Reservation canceling failed. #BookingSeat*cancelReservation");
+                Packet request = new Packet(7);
+                request.setUserName(UserController.getAuthUser());
+                Packet response = ClientServerController.get(request);
+                if (response.getMessage() !=1) {
+                    System.out.println(response.getMessageString());
                     return false;
                 }
                 return true;
@@ -75,21 +76,7 @@ public class BookingSeats {
     }
 
 
-    private static int columnCalculate(int seatId){
-        return ((seatId-1)%14)+1;
-    }
-    private static char rowCalculate(int seatId){
-        if ((seatId-1)/14==0){
-            return 'A';
-        }else if((seatId-1)/14==1){
-            return 'B';
-        }else if((seatId-1)/14==2){
-            return 'C';
-        }else if((seatId-1)/14==3){
-            return 'D';
-        }
-        return ' ';
-    }
+
 
 
 }

@@ -1,10 +1,8 @@
 package com.CinemaTicketBooking.View;
 
-import com.CinemaTicketBooking.Controler.BillController;
-import com.CinemaTicketBooking.Controler.SeatTicket;
+import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.Controler.UserController;
-import com.CinemaTicketBooking.Model.Data.BillData;
-import com.CinemaTicketBooking.Model.Ticket;
+import com.CinemaTicketBooking.Model.Packet;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,17 +10,20 @@ import java.util.List;
 
 
 public class PayingBills {
-    private BillController billController = new BillController();
-
 
     public boolean start(String userName){
-        List<Ticket> tickets;
         int total=0;
 
 
-        tickets= billController.getUserTicketForBilling(userName);
-        if (tickets==null){
-            System.out.println("Null pointer #PayingBills*start");
+        Packet request = new Packet(7);
+        request.setUserName(UserController.getAuthUser());
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
+            return false;
+        }
+        if (response.getItem().isEmpty()){
+            System.out.println("Bills is Empty ");
             return false;
         }
 
@@ -31,13 +32,10 @@ public class PayingBills {
                 "Admin: "+ UserController.getAuthUser());
         System.out.println("---------------------");
 
-        for (Ticket ticket : tickets) {
-            System.out.println("SeatId: " + ticket.getSeatId() + "    Seat Position: " + ticket.getSeatRow() + ticket.getSeatColumn() +
-                    "       Movie : " + ticket.getMovie().getMovieName() +
-                    "\nTheater: " + ticket.getTheaterId() + "       Show Time: " + ticket.getShowTime() + "    Price: 5$");
-            System.out.println();
-            total += 5;
-        }
+        //get ticket String from server and multiply total with list.size
+        response.getItem().forEach(System.out::println);
+        System.out.println();
+        total = response.getItem().size()*5;
 
         System.out.println("---------------------");
         System.out.println();
@@ -45,9 +43,9 @@ public class PayingBills {
         System.out.println("        *Have a great show*");
         System.out.println();
 
-        if(!billController.removeTickets(userName))
-            return false;
-        return billController.addBill(total,tickets);
+
+        //add username to post it to  server instead of removeTickets
+        return true;
 
     }
 

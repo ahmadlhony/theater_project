@@ -1,5 +1,4 @@
 import com.CinemaTicketBooking.Controler.ClientServerConnection;
-import com.CinemaTicketBooking.Controler.ClientServerController;
 import com.CinemaTicketBooking.View.StartView;
 
 

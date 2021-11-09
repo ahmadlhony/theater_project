@@ -1,43 +1,57 @@
 package com.CinemaTicketBooking.Controler;
 
-import com.CinemaTicketBooking.Model.Data.UserData;
-import com.CinemaTicketBooking.Model.User;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.CinemaTicketBooking.Model.Packet;
 
 
 public class UserController {
-    UserData userData = new UserData();
-    private static User authenticatedUser;
+
+    private static String authenticatedUserName;
+    private static boolean isAdmin;
+
+
     public boolean addUser(String userName, boolean isAdmin){
-        if (isUserExist(userName)){
-            System.out.println("sorry this UserName is already available #UserController*addUser");
+        Packet request = new Packet(1);
+        request.setUserName(userName);
+        request.setAdmin(isAdmin);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
             return false;
         }
-        return userData.addUser(userName, isAdmin);
+        return response.getMessage()==1;
     }
 
     public boolean authenticateUser(String userName){
-        for (User user : userData.getUsers()){
-            if (user.getUserName().equals(userName.toLowerCase())){
-                System.out.println("Successful Authenticated user from UserController Class");
-                authenticatedUser = user;
-                return true;
-            }
+        Packet request = new Packet(2);
+        request.setUserName(userName);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
+            return false;
         }
-//        users.stream().anyMatch(user -> user.getUserName().equals(userName.toLowerCase()));
-        System.out.println("UserName is not exist.");
-        return false;
+        authenticatedUserName =response.getUserName();
+        isAdmin=response.getUser().get(response.getUserName());
+        return response.getMessage()==1;
+
     }
 
     public boolean isUserExist(String userName){
-        return userData.getUsers().stream().anyMatch(user -> user.getUserName().equals(userName));
+        Packet request = new Packet(2);
+        request.setUserName(userName);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
+            return false;
+        }
+        return response.getMessage()==1;
     }
 
-    public static User getAuthUser(){
-        return authenticatedUser;
+    public static String getAuthUser(){
+        return authenticatedUserName;
+    }
+    public static boolean isAdmin(){
+        return isAdmin;
     }
 
 }

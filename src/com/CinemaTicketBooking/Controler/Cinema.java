@@ -1,112 +1,87 @@
 package com.CinemaTicketBooking.Controler;
-import com.CinemaTicketBooking.Model.Data.MovieData;
-import com.CinemaTicketBooking.Model.Data.TheaterData;
-import com.CinemaTicketBooking.Model.Movie;
-import com.CinemaTicketBooking.Model.Seat;
-import com.CinemaTicketBooking.Model.Theater;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.CinemaTicketBooking.Model.Packet;
+
 
 public class Cinema {
-
-
-
     public boolean bookShow(int theaterId, String showTime,String movieName){
-        TheaterData theaterData = new TheaterData();
-        if (!showTime.equals("2:00") && !showTime.equals("5:00") && !showTime.equals("8:00")){
-            System.out.println("Showtime is not available. #Cinema*bookShow");
+        Packet request = new Packet(8);
+        request.setTheaterId(theaterId);
+        request.setShowTime(showTime);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
             return false;
         }
-        if (!MovieController.isMovieExist(movieName)){
-            System.out.println("movie name in not exist. #Cinema*bookShow");
-            return false;
-        }
-
-        int theaterItem = theaterItemInList(theaterId,showTime);
-        Movie movie  = MovieController.getMovieByName(movieName).get();
-        return theaterData.bookShow(theaterItem,movie);
+        return response.getMessage()==1;
     }
 
     public boolean UnBookShow(int theaterId, String showTime){
-        TheaterData theaterData = new TheaterData();
-        var bookedShows = theaterData.getBookedShows();
-        if (!showTime.equals("2:00") && !showTime.equals("5:00") && !showTime.equals("8:00")){
-            System.out.println("Showtime is not available.");
+        Packet request = new Packet(9);
+        request.setTheaterId(theaterId);
+        request.setShowTime(showTime);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
             return false;
         }
-        int theaterItem = theaterItemInList(theaterId,showTime);
-        return theaterData.UnBookShow(theaterItem);
-    }
-
-    public Theater getBookedTheater(int theaterId,String showTime){
-        TheaterData theaterData = new TheaterData();
-        int theaterItem = theaterItemInList(theaterId,showTime);
-        if (!theaterData.getTheaters().get(theaterItem).isTheaterBooked()){
-            System.out.println("Theater is not Booked");
-            return null;
-        }
-        return theaterData.getTheaters().get(theaterItem);
+        return response.getMessage()==1;
     }
 
     public boolean showAvailableSeat(int theaterId,String showTime) {
-
-        System.out.println("\n*available Seats are for theater: "+theaterId+", at: "+showTime  +"*");
-
-        List<Seat> seats;
-        try {
-            seats=getBookedTheater(theaterId,showTime).availableSeats();
-        }catch (NullPointerException e){
-            System.out.println("null pointer exception");
+        Packet request = new Packet(10);
+        request.setTheaterId(theaterId);
+        request.setShowTime(showTime);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
             return false;
         }
-
-        seats.forEach(seat -> {
+        response.getItem().forEach(seat -> {
             System.out.print(seat);
-            if (seat.getSeatId()==14 || seat.getSeatId()==28 || seat.getSeatId()==42)
+            if (seat.contains("14") || seat.contains("28") || seat.contains("42"))
                 System.out.println();
         });
         return true;
     }
 
-    private int theaterItemInList(int theaterId, String showTime){
-        if (theaterId<1 || theaterId>3){
-            System.out.println("Theater Id not available.");
-            return -1;
-        }
-        int temp=-10;
-        if (showTime.equals("2:00")){
-            temp=0;
-        }else if (showTime.equals("5:00")){
-            temp = 3;
-        }else if (showTime.equals("8:00")){
-            temp=6;
-
-        }
-        return (theaterId+temp)-1;
-    }
-
-    public List<Theater> availableShowTime() {
-        TheaterData theaterData = new TheaterData();
-        return theaterData.getTheaters().stream()
-                .filter(theater ->!theaterData.getBookedShows().containsKey(theaterItemInList(theater.getTheaterId(),theater.getShowTime())))
-                .collect(Collectors.toList());
-    }
+//    private int theaterItemInList(int theaterId, String showTime){
+//        if (theaterId<1 || theaterId>3){
+//            System.out.println("Theater Id not available.");
+//            return -1;
+//        }
+//        int temp=-10;
+//        if (showTime.equals("2:00")){
+//            temp=0;
+//        }else if (showTime.equals("5:00")){
+//            temp = 3;
+//        }else if (showTime.equals("8:00")){
+//            temp=6;
+//
+//        }
+//        return (theaterId+temp)-1;
+//    }
 
     public void availableShows(){
-        availableShowTime()
-                .forEach(theater ->  System.out.println("Theater: " + theater.getTheaterId()+"  is Available at: "+theater.getShowTime()));
+        Packet request = new Packet(11);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
+            return;
+        }
+        response.getItem()
+                .forEach(System.out::println);
     }
 
     public boolean availableMovieIsInShow(){
-        TheaterData theaterData = new TheaterData();
-        var bookedShows = theaterData.getBookedShows();
-        if(bookedShows.isEmpty()){
-            System.out.println("No Show Available. #Cinema*availableMovieInShow");
+        Packet request = new Packet(12);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1){
+            System.out.println(response.getMessageString());
             return false;
         }
-        System.out.println("Available Movie Shows: ");
-        bookedShows.forEach((k,v) -> System.out.println(theaterData.getTheaters().get(k)));
+        response.getItem().stream()
+                .forEach(System.out::println);
         return true;
     }
 
@@ -123,14 +98,6 @@ public class Cinema {
         }
     }
 
-    public boolean bookSeat(int theaterId,String showTime,int seatId){
-        TheaterData theaterData = new TheaterData();
-        return theaterData.bookSeat(theaterItemInList(theaterId,showTime),seatId);
-    }
 
-    public boolean unBookSeat(int theaterId,String showTime,int seatId){
-        TheaterData theaterData = new TheaterData();
-        return theaterData.unBookSeat(theaterItemInList(theaterId,showTime),seatId);
-    }
 
 }

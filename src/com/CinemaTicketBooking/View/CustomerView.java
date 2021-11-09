@@ -1,14 +1,11 @@
 package com.CinemaTicketBooking.View;
 
 import com.CinemaTicketBooking.Controler.ClientServerConnection;
-import com.CinemaTicketBooking.Controler.ClientServerController;
-import com.CinemaTicketBooking.Controler.FetchAndSetData;
 
 import java.util.Scanner;
 
 public class CustomerView {
     public static void start(){
-        FetchAndSetData.fetchAndSetAllData();
         Scanner console = new Scanner(System.in);
         System.out.println("*Customer Interface*");
         while (true){
@@ -22,10 +19,8 @@ public class CustomerView {
                 ClientServerConnection.stopConnection();
                 break;
             }else if (select==1){
-                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.startBookingSeat();
             }else if(select==2){
-                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.cancelReservation();
             }
 

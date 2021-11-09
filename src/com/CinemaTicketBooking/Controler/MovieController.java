@@ -1,39 +1,32 @@
 package com.CinemaTicketBooking.Controler;
 
-import com.CinemaTicketBooking.Model.Data.MovieData;
-import com.CinemaTicketBooking.Model.Movie;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.CinemaTicketBooking.Model.Packet;
 
 public class MovieController {
 
 
     public static boolean addMovie(String movieName){
-        MovieData movieData = new MovieData();
-        if (getMovieByName(movieName).isPresent()){
-            System.out.println("Movie is already Available #MovieData*addMovie");
+        Packet request = new Packet(3);
+        request.setMovieName(movieName);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
             return false;
         }
-        return movieData.addMovie(movieName);
-    }
-
-    public static boolean isMovieExist(String movieName){
-        MovieData movieData = new MovieData();
-        return movieData.getMovies().stream().anyMatch(m -> m.getMovieName().equals(movieName));
-    }
-
-    public static Optional<Movie> getMovieByName(String movieName){
-        MovieData movieData = new MovieData();
-        return movieData.getMovies().stream().filter(movie -> movie.getMovieName().equals(movieName)).findAny();
+        return response.getMessage()==1;
     }
 
     public void availableMovies(){
-        MovieData movieData = new MovieData();
+        Packet request = new Packet(4);
+        Packet response = ClientServerController.get(request);
+        if (response.getMessage() !=1) {
+            System.out.println(response.getMessageString());
+            return;
+        }
+        if (response.getItem().isEmpty())
+            return;
         System.out.println("Available Movies: ");
-        movieData.getMovies().forEach(m -> System.out.println(m.getMovieName() + "."));
+        response.getItem().forEach(System.out::println);
         System.out.println();
     }
 

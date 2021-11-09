@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 public class AdminView {
     public static void start(){
-        FetchAndSetData.fetchAndSetAllData();
         UserController userController = new UserController();
         MovieController movieController = new MovieController();
         Cinema cinema = new Cinema();
@@ -29,27 +28,19 @@ public class AdminView {
             int menuAns = console.nextInt();
             if (menuAns==1){
                 while (true) {
-                FetchAndSetData.fetchAndSetAllData();
                     System.out.println("Have you reserved seat ? " +
                             "\n1.Yes" +
                             "\n2.No" +
                             "\n0.Back");
                     int reservedSeatAns = console.nextInt();
                     if (reservedSeatAns == 1) {
-                        FetchAndSetData.fetchAndSetBillData();
-                        FetchAndSetData.fetchAndSetTicketData();
-
                         System.out.println("Please Enter your Username: ");
                         String userName = console.next();
-                        FetchAndSetData.fetchAndSetTheaterData();
                         if(payingBills.start(userName)){
                             System.out.println("Complete #AdminView*payingBill1");
                             break;
                         }
-
-
                     } else if (reservedSeatAns == 2) {
-                        FetchAndSetData.fetchAndSetTheaterData();
                         System.out.println("Please reserve your seat. ");
                         BookingSeats.startBookingSeat();
                     }else if (reservedSeatAns==0){
@@ -58,10 +49,8 @@ public class AdminView {
                 }
 
             }else if(menuAns==2){
-                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.startBookingSeat();
             }else if(menuAns==3){
-                FetchAndSetData.fetchAndSetAllData();
                 System.out.println("\n Enter Movie Name: ");
                 String movieName = console.next();
 //                console.nextLine();
@@ -71,7 +60,6 @@ public class AdminView {
 
 
             }else if(menuAns==4){
-                FetchAndSetData.fetchAndSetAllData();
                 System.out.println();
                 movieController.availableMovies();
                 System.out.println("Enter Movie Name: ");
@@ -91,10 +79,7 @@ public class AdminView {
                     System.out.println("Show not booked AdminView");
 
                 }
-
-
             }else if(menuAns==5){
-                FetchAndSetData.fetchAndSetAllData();
                 System.out.println("\n*Cancel Show*");
                 if(!cinema.availableMovieIsInShow()){
                     continue;
@@ -111,7 +96,6 @@ public class AdminView {
                 }
 
             }else if(menuAns==6){
-                FetchAndSetData.fetchAndSetAllData();
                 BookingSeats.cancelReservation();
             }else if(menuAns==0){
                 ClientServerConnection.stopConnection();

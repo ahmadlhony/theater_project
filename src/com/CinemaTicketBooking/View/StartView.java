@@ -1,8 +1,6 @@
 package com.CinemaTicketBooking.View;
 
 import com.CinemaTicketBooking.Controler.ClientServerConnection;
-import com.CinemaTicketBooking.Controler.ClientServerController;
-import com.CinemaTicketBooking.Controler.FetchAndSetData;
 import com.CinemaTicketBooking.Controler.UserController;
 
 import java.util.Scanner;
@@ -10,7 +8,6 @@ import java.util.Scanner;
 public class StartView {
 
     public static void start(){
-        FetchAndSetData.fetchAndSetUserData();
         Scanner console = new Scanner(System.in);
         System.out.println("Welcome to Cinema Ticket Booking");
         while(true){
@@ -19,7 +16,7 @@ public class StartView {
             int accountAns = console.nextInt();
             if (accountAns==1){
                 if (AuthenticateUser.AuthUser()){
-                    if (UserController.getAuthUser().isAdmin()) {
+                    if (UserController.isAdmin()) {
                         AdminView.start();
                     } else {
                         CustomerView.start();
@@ -31,7 +28,7 @@ public class StartView {
             }else if(accountAns==2){
                 if (AddingUser.addUser()){
                     if (AuthenticateUser.AuthUser()){
-                        if (UserController.getAuthUser().isAdmin()) {
+                        if (UserController.isAdmin()) {
                             AdminView.start();
                         } else {
                             CustomerView.start();
@@ -47,6 +44,6 @@ public class StartView {
                 break;
             }
         }
-        FetchAndSetData.fetchAndSetAllData();
+
     }
 }

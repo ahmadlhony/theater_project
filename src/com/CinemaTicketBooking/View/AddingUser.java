@@ -11,6 +11,10 @@ public class AddingUser {
             Scanner console = new Scanner(System.in);
             System.out.println("Enter a UserName");
             String userName = console.next();
+            if (userController.isUserExist(userName)){
+                System.out.println("this userName Exist");
+                continue;
+            }
             System.out.println("Are you admin? \n1.yes \nAny other key for no");
             int admin = console.nextInt();
             boolean isAdmin = false;
